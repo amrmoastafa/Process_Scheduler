@@ -8,7 +8,10 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QToolBar>
-#include "gui.h"
+#include <QVBoxLayout>
+#include <vector>
+#include <QList>
+
 namespace Ui {
 class MainWindow;
 }
@@ -18,27 +21,28 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    gui *gui;
-    QString t1,t2;
-    QString *alg;
-    QString *n;
+    QString num_process,alg;
     QLineEdit *number;
-    QLineEdit *num2;
+    QLineEdit *arrival_time;
+    QLineEdit *burst_time;
     QComboBox *Algorithm;
     QPushButton *m_button;
     QToolBar *toolbar;
     QLabel *type;
     QLabel *N_process;
+    QLabel *burst_label;
+    QLabel *arrival_label;
+    QLabel *ID;
     QPushButton *Ok;
+    QPushButton *Simulate;
 
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 private:
 
-    Ui::MainWindow *ui;
+   // Ui::MainWindow *ui;
 
-   // QPushButton *Ok ;
 public slots:
     void get_param();
 

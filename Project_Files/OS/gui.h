@@ -15,9 +15,9 @@ private:
     QPushButton *Ok;
 public:
     explicit gui(QWidget *parent = nullptr);
-    void connection();
+
 public slots:
-    void get_data();
+
 
 };
 
