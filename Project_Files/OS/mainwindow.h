@@ -9,7 +9,7 @@
 #include <QPushButton>
 #include <QToolBar>
 #include <QVBoxLayout>
-#include <vector>
+#include <QVector>
 #include <QList>
 
 namespace Ui {
@@ -23,8 +23,8 @@ class MainWindow : public QMainWindow
 public:
     QString num_process,alg;
     QLineEdit *number;
-    QLineEdit *arrival_time;
-    QLineEdit *burst_time;
+    QLineEdit *arrival_input;
+    QLineEdit *burst_input;
     QComboBox *Algorithm;
     QPushButton *m_button;
     QToolBar *toolbar;
@@ -35,6 +35,9 @@ public:
     QLabel *ID;
     QPushButton *Ok;
     QPushButton *Simulate;
+    QVector <QLineEdit *> burst_time;
+    QVector <QLineEdit *> arrival_time;
+
 
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -45,6 +48,7 @@ private:
 
 public slots:
     void get_param();
+    void Get_Text();
 
 };
 

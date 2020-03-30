@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 //#include "ui_mainwindow.h"
 
+#include <QTextStream>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
    // ,ui(new Ui::MainWindow)
@@ -72,19 +74,25 @@ void MainWindow:: get_param(){
     this->layout()->addWidget(burst_label);
     this->layout()->addWidget(arrival_label);
 
+
     int height=0;
     for (int i = 0; i<this->num_process.split(" ")[0].toInt(); i++)//convert from QString to int
     {
-        arrival_time = new QLineEdit();
-        burst_time = new QLineEdit();
+        arrival_input = new QLineEdit();
+        burst_input = new QLineEdit();
+
+        burst_time.push_back(burst_input);
+        arrival_time.push_back(arrival_input);
+
         ID = new QLabel();
         ID->setText(tr("P %1").arg(i));
         ID->setGeometry(20,250+height,30,30);
         ID->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
-        arrival_time->setGeometry(60,250+height,80,30);
-        burst_time->setGeometry(170,250+height,80,30);
-        this->layout()->addWidget(arrival_time);
-        this->layout()->addWidget(burst_time);
+        arrival_input->setGeometry(60,250+height,80,30);
+        burst_input->setGeometry(170,250+height,80,30);
+
+        this->layout()->addWidget(arrival_input);
+        this->layout()->addWidget(burst_input);
         this->layout()->addWidget(ID);
         height+=50;
 
@@ -96,7 +104,28 @@ void MainWindow:: get_param(){
     Simulate->setGeometry(40,height+270,210,40);
     this->layout()->addWidget(Simulate);
 
+    connect(Simulate,SIGNAL(clicked()),this,SLOT(Get_Text())) ;
 
 
+}
+
+void MainWindow::Get_Text()
+{QTextStream output(stdout);
+    output <<burst_time.size()<<endl;
+    for(int j = 0; j<burst_time.size(); j++)
+    {
+        QString text = burst_time.at(j)->text();
+        output << text<<endl;
+
+    }
+
+    output <<"*********"<<endl;
+
+    for(int j = 0; j<arrival_time.size(); j++)
+    {
+        QString text = arrival_time.at(j)->text();
+        output << text<<endl;
+
+    }
 }
 
