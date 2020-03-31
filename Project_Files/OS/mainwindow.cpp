@@ -63,10 +63,20 @@ void MainWindow:: get_param(){
     this->num_process= this->number->text();
     this->alg = this->Algorithm->currentText();
 
-    if (this->alg == "SJF") SJF_layout();
-    else if (this->alg == "FCFS") FCFS_layout();
-    else if (this->alg == "Round Robin") RR_layout();
-    else if (this->alg == "Priority") PRIORITY_layout();
+    int height=0;
+
+    if (this->alg == "SJF") height=SJF_layout();
+    else if (this->alg == "FCFS") height=FCFS_layout();
+    else if (this->alg == "Round Robin") height=RR_layout();
+    else if (this->alg == "Priority") height=PRIORITY_layout();
+
+    Simulate = new QPushButton("Simulate");
+    Simulate->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 4px;} "
+                            "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
+    Simulate->setGeometry(40,height+270,210,40);
+    this->layout()->addWidget(Simulate);
+
+    connect(Simulate,SIGNAL(clicked()),this,SLOT(Get_Text()));
 }
 
 
@@ -90,8 +100,10 @@ void MainWindow::Get_Text()
 }
 
 
-/*Layout for each algorithm*/
-void MainWindow::SJF_layout(){
+/*Layout for each algorithm
+ * each one return the height of the simulate button
+ */
+int MainWindow::SJF_layout(){
 
     arrival_label = new QLabel();
     burst_label = new QLabel();
@@ -128,23 +140,24 @@ void MainWindow::SJF_layout(){
          height+=50;
 
       }
-     Simulate = new QPushButton("Simulate");
-     Simulate->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 4px;} "
-                             "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
-     Simulate->setGeometry(40,height+270,210,40);
-     this->layout()->addWidget(Simulate);
 
-     connect(Simulate,SIGNAL(clicked()),this,SLOT(Get_Text()));
+     return height;
 }
 
-void MainWindow::FCFS_layout(){
+int MainWindow::FCFS_layout(){
+    int height=0;
     qDebug("FCFS");
+    return height;
 }
 
-void MainWindow::RR_layout(){
+int MainWindow::RR_layout(){
+    int height=0;
     qDebug("RR");
+    return height;
 }
 
-void MainWindow::PRIORITY_layout(){
+int MainWindow::PRIORITY_layout(){
+    int height=0;
     qDebug("FCFS");
+    return height;
 }

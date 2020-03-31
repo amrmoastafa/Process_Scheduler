@@ -42,10 +42,10 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void SJF_layout();
-    void FCFS_layout();
-    void RR_layout();
-    void PRIORITY_layout();
+    int SJF_layout();
+    int FCFS_layout();
+    int RR_layout();
+    int PRIORITY_layout();
 
 private:
 
