@@ -57,11 +57,41 @@ MainWindow::~MainWindow()
 
 
 /*to get the no of process and the alg
- * create qlineEdit for each process' burst and arrival time
+ * choose layout for each algorithm
  */
 void MainWindow:: get_param(){
     this->num_process= this->number->text();
     this->alg = this->Algorithm->currentText();
+
+    if (this->alg == "SJF") SJF_layout();
+    else if (this->alg == "FCFS") FCFS_layout();
+    else if (this->alg == "Round Robin") RR_layout();
+    else if (this->alg == "Priority") PRIORITY_layout();
+}
+
+
+/*Function to get the values stored in the burst and arrival time vectors*/
+void MainWindow::Get_Text()
+{QTextStream output(stdout);
+    output <<burst_time.size()<<endl;
+    for(int j = 0; j<burst_time.size(); j++)
+    {
+        QString text = burst_time.at(j)->text();
+        output << text<<endl;
+    }
+
+    output <<"*********"<<endl;
+
+    for(int j = 0; j<arrival_time.size(); j++)
+    {
+        QString text = arrival_time.at(j)->text();
+        output << text<<endl;
+    }
+}
+
+
+/*Layout for each algorithm*/
+void MainWindow::SJF_layout(){
 
     arrival_label = new QLabel();
     burst_label = new QLabel();
@@ -78,54 +108,43 @@ void MainWindow:: get_param(){
     int height=0;
     for (int i = 0; i<this->num_process.split(" ")[0].toInt(); i++)//convert from QString to int
     {
-        arrival_input = new QLineEdit();
-        burst_input = new QLineEdit();
 
-        burst_time.push_back(burst_input);
-        arrival_time.push_back(arrival_input);
+         arrival_input = new QLineEdit();
+         burst_input = new QLineEdit();
 
-        ID = new QLabel();
-        ID->setText(tr("P %1").arg(i));
-        ID->setGeometry(20,250+height,30,30);
-        ID->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
-        arrival_input->setGeometry(60,250+height,80,30);
-        burst_input->setGeometry(170,250+height,80,30);
+         burst_time.push_back(burst_input);
+         arrival_time.push_back(arrival_input);
 
-        this->layout()->addWidget(arrival_input);
-        this->layout()->addWidget(burst_input);
-        this->layout()->addWidget(ID);
-        height+=50;
+         ID = new QLabel();
+         ID->setText(tr("P %1").arg(i));
+         ID->setGeometry(20,250+height,30,30);
+         ID->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
+         arrival_input->setGeometry(60,250+height,80,30);
+         burst_input->setGeometry(170,250+height,80,30);
 
-    }
+         this->layout()->addWidget(arrival_input);
+         this->layout()->addWidget(burst_input);
+         this->layout()->addWidget(ID);
+         height+=50;
 
-    Simulate = new QPushButton("Simulate");
-    Simulate->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 4px;} "
-                          "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
-    Simulate->setGeometry(40,height+270,210,40);
-    this->layout()->addWidget(Simulate);
+      }
+     Simulate = new QPushButton("Simulate");
+     Simulate->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 4px;} "
+                             "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
+     Simulate->setGeometry(40,height+270,210,40);
+     this->layout()->addWidget(Simulate);
 
-    connect(Simulate,SIGNAL(clicked()),this,SLOT(Get_Text())) ;
-
-
+     connect(Simulate,SIGNAL(clicked()),this,SLOT(Get_Text()));
 }
 
-void MainWindow::Get_Text()
-{QTextStream output(stdout);
-    output <<burst_time.size()<<endl;
-    for(int j = 0; j<burst_time.size(); j++)
-    {
-        QString text = burst_time.at(j)->text();
-        output << text<<endl;
-
-    }
-
-    output <<"*********"<<endl;
-
-    for(int j = 0; j<arrival_time.size(); j++)
-    {
-        QString text = arrival_time.at(j)->text();
-        output << text<<endl;
-
-    }
+void MainWindow::FCFS_layout(){
+    qDebug("FCFS");
 }
 
+void MainWindow::RR_layout(){
+    qDebug("RR");
+}
+
+void MainWindow::PRIORITY_layout(){
+    qDebug("FCFS");
+}
