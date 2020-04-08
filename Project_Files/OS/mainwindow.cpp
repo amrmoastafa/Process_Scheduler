@@ -19,13 +19,13 @@ MainWindow::MainWindow(QWidget *parent) :
    type->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
    type->setGeometry(10,30,120,30);
 
-   Algorithm = new QComboBox(this);
-   Algorithm->setStyleSheet("background-color:white;");
-   Algorithm->setGeometry(150,30,120,30);
-   Algorithm->addItem("FCFS");
-   Algorithm->addItem("SJF");
-   Algorithm->addItem("Round Robin");
-   Algorithm->addItem("Priority");
+   Algorithm_dropdown = new QComboBox(this);
+   Algorithm_dropdown->setStyleSheet("background-color:white;");
+   Algorithm_dropdown->setGeometry(150,30,120,30);
+   Algorithm_dropdown->addItem("FCFS");
+   Algorithm_dropdown->addItem("SJF");
+   Algorithm_dropdown->addItem("Round Robin");
+   Algorithm_dropdown->addItem("Priority");
 
 
   /******number of process input*****/
@@ -34,10 +34,10 @@ MainWindow::MainWindow(QWidget *parent) :
   N_process->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
   N_process->setGeometry(10,90,130,30);
 
-  number= new   QLineEdit(this);
-  number->setGeometry(150,90,120,30);
-  number->setStyleSheet("background-color:white;");
-  QString p= number->text();
+  num_process_line_edit= new   QLineEdit(this);
+  num_process_line_edit->setGeometry(150,90,120,30);
+  num_process_line_edit->setStyleSheet("background-color:white;");
+  QString p= num_process_line_edit->text();
 
 
   Ok = new QPushButton("OK",this);
@@ -60,15 +60,16 @@ MainWindow::~MainWindow()
  * choose layout for each algorithm
  */
 void MainWindow:: get_param(){
-    this->num_process= this->number->text();
-    this->alg = this->Algorithm->currentText();
+    this->num_process_chosen= this->num_process_line_edit->text(); //getting the number of process from the line edit
+    this->Alg_chosen = this->Algorithm_dropdown->currentText(); //getting the chosen algorithm from dropdown
 
+  //height is a variable used to adjust the simulate button after the qline-edits are drawn
     int height=0;
 
-    if (this->alg == "SJF") height=SJF_layout();
-    else if (this->alg == "FCFS") height=FCFS_layout();
-    else if (this->alg == "Round Robin") height=RR_layout();
-    else if (this->alg == "Priority") height=PRIORITY_layout();
+    if (this->Alg_chosen == "SJF") height=SJF_layout();
+    else if (this->Alg_chosen == "FCFS") height=FCFS_layout();
+    else if (this->Alg_chosen == "Round Robin") height=RR_layout();
+    else if (this->Alg_chosen == "Priority") height=PRIORITY_layout();
 
     Simulate = new QPushButton("Simulate");
     Simulate->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 4px;} "
@@ -80,13 +81,13 @@ void MainWindow:: get_param(){
 }
 
 
-/*Function to get the values stored in the burst and arrival time vectors*/
+/*Function to get the values stored in the burst and arrival time vectors*/ /***debugging function***/
 void MainWindow::Get_Text()
 {QTextStream output(stdout);
     output <<burst_time.size()<<endl;
     for(int j = 0; j<burst_time.size(); j++)
     {
-        QString text = burst_time.at(j)->text();
+        QString text = burst_time.at(j)->text(); //getting the text written (burst time of process j) from line edit of j
         output << text<<endl;
     }
 
@@ -104,7 +105,7 @@ void MainWindow::Get_Text()
  * each one return the height of the simulate button
  */
 int MainWindow::SJF_layout(){
-
+    /*setting the Arrival an burst time label*/
     arrival_label = new QLabel();
     burst_label = new QLabel();
     arrival_label->setGeometry(70,200,80,30);
@@ -118,25 +119,25 @@ int MainWindow::SJF_layout(){
 
 
     int height=0;
-    for (int i = 0; i<this->num_process.split(" ")[0].toInt(); i++)//convert from QString to int
+    for (int i = 0; i<this->num_process_chosen.split(" ")[0].toInt(); i++)//convert from QString to int
     {
-
+        /***creating a line edit and pushing the created line edit to a vector***/
          arrival_input = new QLineEdit();
          burst_input = new QLineEdit();
 
          burst_time.push_back(burst_input);
          arrival_time.push_back(arrival_input);
 
-         ID = new QLabel();
-         ID->setText(tr("P %1").arg(i));
-         ID->setGeometry(20,250+height,30,30);
-         ID->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
+         ID_Process = new QLabel();
+         ID_Process->setText(tr("P %1").arg(i));
+         ID_Process->setGeometry(20,250+height,30,30);
+         ID_Process->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
          arrival_input->setGeometry(60,250+height,80,30);
          burst_input->setGeometry(170,250+height,80,30);
 
          this->layout()->addWidget(arrival_input);
          this->layout()->addWidget(burst_input);
-         this->layout()->addWidget(ID);
+         this->layout()->addWidget(ID_Process);
          height+=50;
 
       }

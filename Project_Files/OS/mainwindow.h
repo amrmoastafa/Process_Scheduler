@@ -21,18 +21,18 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    QString num_process,alg;
-    QLineEdit *number;
+    QString num_process_chosen,Alg_chosen;
+    QLineEdit *num_process_line_edit;
     QLineEdit *arrival_input;
     QLineEdit *burst_input;
-    QComboBox *Algorithm;
+    QComboBox *Algorithm_dropdown;
     QPushButton *m_button;
     QToolBar *toolbar;
     QLabel *type;
     QLabel *N_process;
     QLabel *burst_label;
     QLabel *arrival_label;
-    QLabel *ID;
+    QLabel *ID_Process;
     QPushButton *Ok;
     QPushButton *Simulate;
     QVector <QLineEdit *> burst_time;
