@@ -11,10 +11,18 @@
 #include <QVBoxLayout>
 #include <QVector>
 #include <QList>
+#include <QDebug>
 
 namespace Ui {
 class MainWindow;
 }
+class Process
+{
+public:
+    int Arrival_Time, Burst_Time, Remaining_Time, Priority, Termination_Time;
+    int TurnAround_Time = Termination_Time - Arrival_Time;
+    int Waiting_Time = TurnAround_Time - Burst_Time;
+};
 
 class MainWindow : public QMainWindow
 {
@@ -35,6 +43,9 @@ public:
     QLabel *ID_Process;
     QPushButton *Ok;
     QPushButton *Simulate;
+    QVector <Process *> Processes_Queue;
+    //  -)The vector that contains pointers to processes can be treated  as queue
+    //  -)Each element represents a process carrying its information
     QVector <QLineEdit *> burst_time;
     QVector <QLineEdit *> arrival_time;
 

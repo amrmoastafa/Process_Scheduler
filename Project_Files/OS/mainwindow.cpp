@@ -83,20 +83,23 @@ void MainWindow:: get_param(){
 
 /*Function to get the values stored in the burst and arrival time vectors*/ /***debugging function***/
 void MainWindow::Get_Text()
-{QTextStream output(stdout);
-    output <<burst_time.size()<<endl;
+{
+    //We can use qDebug() Function to view variables as follows:
+    //qDebug()<<"This is the value of first element of burst time vector : " <<burst_time[0]->text();
+    //End
+
     for(int j = 0; j<burst_time.size(); j++)
     {
-        QString text = burst_time.at(j)->text(); //getting the text written (burst time of process j) from line edit of j
-        output << text<<endl;
+        Processes_Queue[j]->Burst_Time = (burst_time[j]->text().toInt());//getting the text written (burst time of process j) from line edit of j
+
+        qDebug() <<"Process : " <<j<<" Burst Time is : "<<Processes_Queue[j]->Burst_Time;
     }
 
-    output <<"*********"<<endl;
 
     for(int j = 0; j<arrival_time.size(); j++)
     {
-        QString text = arrival_time.at(j)->text();
-        output << text<<endl;
+        Processes_Queue[j]->Arrival_Time = (arrival_time[j]->text().toInt());
+        qDebug() <<"Process : " <<j<<" Arrival Time is : "<<Processes_Queue[j]->Arrival_Time;
     }
 }
 
@@ -124,7 +127,11 @@ int MainWindow::SJF_layout(){
         /***creating a line edit and pushing the created line edit to a vector***/
          arrival_input = new QLineEdit();
          burst_input = new QLineEdit();
-
+         Process *p = new Process;
+         //Creating a pointer to a process to carry any random address initially given by compiler
+         Processes_Queue.append(p);
+         // Appending that address to the pointer vector
+         qDebug()<< "TRIAL : " << burst_input->text();
          burst_time.push_back(burst_input);
          arrival_time.push_back(arrival_input);
 
