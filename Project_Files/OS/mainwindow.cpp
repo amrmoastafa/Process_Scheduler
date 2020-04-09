@@ -80,7 +80,8 @@ void MainWindow:: get_param(){
 }
 
 
-/*Function to get the values stored in the burst and arrival time vectors*/ /***debugging function***/
+/*Function to get the values stored in the burst and arrival time vectors*/
+/*also to execute the chose algorithm*/
 void MainWindow::Get_Data()
 {
     //We can use qDebug() Function to view variables as follows:
@@ -106,7 +107,7 @@ void MainWindow::Get_Data()
         }
 
     }
-
+   /****choose the Algorithm to be executed****/
     if(Alg_chosen == "SJF" && Preemptive_Checkbox->isChecked() ) SJF_P_Alg();
     else if (Alg_chosen == "SJF" && !Preemptive_Checkbox->isChecked()) SJF_NONP_Alg();
 }
@@ -296,23 +297,82 @@ int MainWindow::PRIORITY_layout(){
 }
 
 void MainWindow::SJF_NONP_Alg(){
-    /*sorting according to burst time*/
-    for(int i=0; i<Processes_Queue.size(); i++){
-        for(int j=0; j<Processes_Queue.size(); j++){
-            if(Processes_Queue[j]->Burst_Time >  Processes_Queue[i]->Burst_Time){
-                Process *temp=Processes_Queue[j];
-                Processes_Queue[j]=Processes_Queue[i];
-                Processes_Queue[i]= temp;
+    /*sorting according to arrival time*/
+        for(int i=0; i<Processes_Queue.size(); i++){
+            for(int j=0; j<Processes_Queue.size(); j++){
+                if(Processes_Queue[j]->Arrival_Time >  Processes_Queue[i]->Arrival_Time){
+                    Process *temp=Processes_Queue[j];
+                    Processes_Queue[j]=Processes_Queue[i];
+                    Processes_Queue[i]= temp;
+                }
             }
         }
-    }
-    for(int i=0; i<Processes_Queue.size(); i++){
-        draw_process = new QLabel();
-        draw_process->setText(tr("P %1").arg(Processes_Queue[i]->ID));
-        draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
-        draw_process->setGeometry(250+(Processes_Queue[i]->Burst_Time*100),700,Processes_Queue[i]->Burst_Time*80,50);
-        this->layout()->addWidget(draw_process);
-    }
+
+        int time =0;
+        int width_Prev=0;
+        while(Processes_Queue.size() !=0){
+            QVector<Process *> ready_processes;
+            for(int i=0; i<Processes_Queue.size();i++){
+                /**check the ready processes**/
+                if(Processes_Queue[i]->Arrival_Time<=time){
+
+                    ready_processes.push_back(Processes_Queue[i]);
+                }
+             }
+
+                // If only one process is ready draw it
+                if(ready_processes.size() == 1){
+                    //draw
+                    qDebug()<<ready_processes[0]->ID;
+                    draw_process = new QLabel();
+                    draw_process->setText(tr("P %1").arg(ready_processes[0]->ID));
+                    draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
+                    draw_process->setGeometry(300+width_Prev,700,ready_processes[0]->Burst_Time*80,50);
+                    this->layout()->addWidget(draw_process);
+                    width_Prev=ready_processes[0]->Burst_Time*80;
+                    time=ready_processes[0]->Burst_Time;
+                    for(int x=0;x<Processes_Queue.size();x++){
+                        if(Processes_Queue[x]->ID == ready_processes[0]->ID){
+                           Processes_Queue.erase(Processes_Queue.begin()+x);
+                           break;
+                        }
+                     }
+                    //continue;
+                }
+                else if (ready_processes.size()==0)  continue;
+
+                /**if more than 1 process is ready compare their burst time**/
+                else{
+                    int min_burst= ready_processes[0]->Burst_Time;
+                    for(int j=0; j<ready_processes.size();j++){
+                       if(ready_processes[j]->Burst_Time < min_burst) min_burst=ready_processes[j]->Burst_Time;
+                    }
+
+                    for(int j=0; j<ready_processes.size();j++){
+                        //el min burst ersmha we ems7ha mn el Queue
+                        if(ready_processes[j]->Burst_Time == min_burst){
+                            qDebug()<<ready_processes[j]->ID;
+                            draw_process = new QLabel();
+                            draw_process->setText(tr("P %1").arg(ready_processes[j]->ID));
+                            draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
+                            draw_process->setGeometry(300+width_Prev,700,ready_processes[j]->Burst_Time*80,50);
+                            this->layout()->addWidget(draw_process);
+                            width_Prev=ready_processes[j]->Burst_Time*80;
+
+                            time = ready_processes[j]->Burst_Time;
+                            for(int x=0;x<Processes_Queue.size();x++){
+                                if(Processes_Queue[x]->ID == ready_processes[j]->ID){
+                                   Processes_Queue.erase(Processes_Queue.begin()+x);
+                                   break;
+                                }
+                             }
+                            break;
+                        }
+                    }
+                }
+        }
+
+
 }
 void MainWindow::SJF_P_Alg(){
     qDebug()<<"Preemptive";
