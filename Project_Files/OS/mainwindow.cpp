@@ -62,11 +62,11 @@ void MainWindow:: get_param(){
     //height is a variable used to adjust the simulate button after the qline-edits are drawn
     int height=0;
 
-    height = General_layout();
-    //    if (this->Alg_chosen == "SJF") height=SJF_layout();
-    //    else if (this->Alg_chosen == "FCFS") height=FCFS_layout();
-    //    else if (this->Alg_chosen == "Round Robin") height=RR_layout();
-    //    else if (this->Alg_chosen == "Priority") height=PRIORITY_layout();
+
+    if (this->Alg_chosen == "SJF") height=SJF_layout();
+    else if (this->Alg_chosen == "FCFS") height=FCFS_layout();
+    else if (this->Alg_chosen == "Round Robin") height=RR_layout();
+    else if (this->Alg_chosen == "Priority") height=PRIORITY_layout();
 
 
     Simulate = new QPushButton("Simulate");
@@ -96,40 +96,37 @@ void MainWindow::Get_Text()
         Processes_Queue[j]->Burst_Time = (burst_time[j]->text().toInt());//getting the text written (burst time of process j) from line edit of j
 
         qDebug() <<"Process : " <<Processes_Queue[j]->Process_name<<" Burst Time is : "<<Processes_Queue[j]->Burst_Time;
+        if(Algorithm_dropdown->currentText() == "Priority")
+        {
+            Processes_Queue[j]->Priority = ((priority_vect[j]->currentIndex())+1);
 
-        Processes_Queue[j]->Priority = ((priority_vect[j]->currentIndex())+1);
+            qDebug() <<"Process : " <<Processes_Queue[j]->Process_name<<" Priority is : "<<Processes_Queue[j]->Priority;
 
-        qDebug() <<"Process : " <<Processes_Queue[j]->Process_name<<" Priority is : "<<Processes_Queue[j]->Priority;
+        }
 
     }
-    qDebug()<<Preemptive_Checkbox->isChecked();
-//    Preemptive_Checkbox->isChecked()
-    \
+
 }
 
 
 /*Layout for each algorithm
  * each one return the height of the simulate button
  */
-int MainWindow::General_layout()
-{
 
+
+int MainWindow::SJF_layout(){
     /*setting the Arrival an burst time label*/
-    arrival_label = new QLabel("Arrival Time");
-    burst_label = new QLabel("Burst Time");
-    priortiy_label = new QLabel("Priority");
-    arrival_label->setGeometry(40,200,80,30);
-    burst_label->setGeometry(130,200,80,30);
-    priortiy_label->setGeometry(220,200,50,30);
-
-
+    arrival_label = new QLabel();
+    burst_label = new QLabel();
+    arrival_label->setGeometry(70,200,80,30);
+    burst_label->setGeometry(180,200,80,30);
+    arrival_label->setText("Arrival Time");
+    burst_label->setText("Burst Time");
     arrival_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
     burst_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
-    priortiy_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
-
     this->layout()->addWidget(burst_label);
     this->layout()->addWidget(arrival_label);
-    this->layout()->addWidget(priortiy_label);
+
 
     int height=0;
     for (int i = 0; i<this->num_process_chosen.split(" ")[0].toInt(); i++)//convert from QString to int
@@ -137,7 +134,126 @@ int MainWindow::General_layout()
         /***creating a line edit and pushing the created line edit to a vector***/
         arrival_input = new QLineEdit();
         burst_input = new QLineEdit();
+        Process *p = new Process;
+        //Creating a pointer to a process to carry any random address initially given by compiler
+        Processes_Queue.append(p);
+        // Appending that address to the pointer vector
+        qDebug()<< "TRIAL : " << burst_input->text();
+        burst_time.push_back(burst_input);
+        arrival_time.push_back(arrival_input);
+
+        ID_Process = new QLabel();
+        ID_Process->setText(tr("P %1").arg(i));
+        ID_Process->setGeometry(20,250+height,30,30);
+        ID_Process->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
+        arrival_input->setGeometry(60,250+height,80,30);
+        burst_input->setGeometry(170,250+height,80,30);
+
+        this->layout()->addWidget(arrival_input);
+        this->layout()->addWidget(burst_input);
+        this->layout()->addWidget(ID_Process);
+        height+=50;
+
+    }
+    Preemptive_Checkbox = new QCheckBox();
+    Preemptive_Checkbox->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
+    Preemptive_Checkbox->setGeometry(80,height+270,18,18);
+    Preemptive_label = new QLabel("Pre-emptive");
+    Preemptive_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
+    Preemptive_label->setGeometry(110,height+270,80,18);
+    this->layout()->addWidget(Preemptive_Checkbox);
+    this->layout()->addWidget(Preemptive_label);
+    height += 50;
+
+    return height;
+}
+
+int MainWindow::FCFS_layout(){
+    /*setting the Arrival an burst time label*/
+    arrival_label = new QLabel();
+    burst_label = new QLabel();
+    arrival_label->setGeometry(70,200,80,30);
+    burst_label->setGeometry(180,200,80,30);
+    arrival_label->setText("Arrival Time");
+    burst_label->setText("Burst Time");
+    arrival_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
+    burst_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
+    this->layout()->addWidget(burst_label);
+    this->layout()->addWidget(arrival_label);
+
+
+    int height=0;
+    for (int i = 0; i<this->num_process_chosen.split(" ")[0].toInt(); i++)//convert from QString to int
+    {
+        /***creating a line edit and pushing the created line edit to a vector***/
+        arrival_input = new QLineEdit();
+        burst_input = new QLineEdit();
+        Process *p = new Process;
+        //Creating a pointer to a process to carry any random address initially given by compiler
+        Processes_Queue.append(p);
+        // Appending that address to the pointer vector
+        qDebug()<< "TRIAL : " << burst_input->text();
+        burst_time.push_back(burst_input);
+        arrival_time.push_back(arrival_input);
+
+        ID_Process = new QLabel();
+        ID_Process->setText(tr("P %1").arg(i));
+        ID_Process->setGeometry(20,250+height,30,30);
+        ID_Process->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
+        arrival_input->setGeometry(60,250+height,80,30);
+        burst_input->setGeometry(170,250+height,80,30);
+
+        this->layout()->addWidget(arrival_input);
+        this->layout()->addWidget(burst_input);
+        this->layout()->addWidget(ID_Process);
+        height+=50;
+
+    }
+
+    return height;
+}
+
+int MainWindow::RR_layout(){
+    int height=0;
+    qDebug("RR");
+    return height;
+}
+
+int MainWindow::PRIORITY_layout(){
+    /*setting the Arrival an burst time label*/
+    arrival_label = new QLabel("Arrival Time");
+    burst_label = new QLabel("Burst Time");
+    arrival_label->setGeometry(40,200,80,30);
+    burst_label->setGeometry(130,200,80,30);
+
+    priortiy_label = new QLabel("Priority");
+    priortiy_label->setGeometry(220,200,50,30);
+    priortiy_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
+    this->layout()->addWidget(priortiy_label);
+
+
+
+
+    arrival_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
+    burst_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
+
+    this->layout()->addWidget(burst_label);
+    this->layout()->addWidget(arrival_label);
+
+    int height=0;
+    for (int i = 0; i<this->num_process_chosen.split(" ")[0].toInt(); i++)//convert from QString to int
+    {
+        /***creating a line edit and pushing the created line edit to a vector***/
+        arrival_input = new QLineEdit();
+        burst_input = new QLineEdit();
+
         priority_input = new QComboBox();
+        priority_vect.push_back(priority_input);
+        priority_input->addItems({"1","2","3","4","5"});
+        priority_input->setGeometry(220,250+height,40,30);
+
+        this->layout()->addWidget(priority_input);
+
         Process *p = new Process;
 
         //Creating a pointer to a process to carry any random address initially given by compiler
@@ -145,99 +261,33 @@ int MainWindow::General_layout()
         // Appending that address to the pointer vector
         burst_time.push_back(burst_input);
         arrival_time.push_back(arrival_input);
-        priority_vect.push_back(priority_input);
-        priority_input->addItems({"1","2","3","4","5"});
+
         ID_Process = new QLabel();
 
         ID_Process->setText(tr("P%1").arg(i));
         Processes_Queue[i]->Process_name = ID_Process->text();
-        qDebug() <<Processes_Queue[i]->Process_name;
+
         ID_Process->setGeometry(20,250+height,30,30);
         ID_Process->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
         arrival_input->setGeometry(60,250+height,40,30);
         burst_input->setGeometry(140,250+height,40,30);
-        priority_input->setGeometry(220,250+height,40,30);
+
+        this->layout()->addWidget(priority_input);
         this->layout()->addWidget(arrival_input);
         this->layout()->addWidget(burst_input);
-        this->layout()->addWidget(priority_input);
+
         this->layout()->addWidget(ID_Process);
         height+=50;
 
     }
-    if(Algorithm_dropdown->currentText() != "FCFS")
-    {
-        Preemptive_Checkbox = new QCheckBox();
-        Preemptive_Checkbox->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
-        Preemptive_Checkbox->setGeometry(80,height+270,18,18);
-        Preemptive_label = new QLabel("Pre-emptive");
-        Preemptive_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
-        Preemptive_label->setGeometry(110,height+270,80,18);
-        this->layout()->addWidget(Preemptive_Checkbox);
-        this->layout()->addWidget(Preemptive_label);
-        height += 50;
-    }
+    Preemptive_Checkbox = new QCheckBox();
+    Preemptive_Checkbox->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
+    Preemptive_Checkbox->setGeometry(80,height+270,18,18);
+    Preemptive_label = new QLabel("Pre-emptive");
+    Preemptive_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
+    Preemptive_label->setGeometry(110,height+270,80,18);
+    this->layout()->addWidget(Preemptive_Checkbox);
+    this->layout()->addWidget(Preemptive_label);
+    height += 50;
     return height;
 }
-
-//int MainWindow::SJF_layout(){
-//    /*setting the Arrival an burst time label*/
-//    arrival_label = new QLabel();
-//    burst_label = new QLabel();
-//    arrival_label->setGeometry(70,200,80,30);
-//    burst_label->setGeometry(180,200,80,30);
-//    arrival_label->setText("Arrival Time");
-//    burst_label->setText("Burst Time");
-//    arrival_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
-//    burst_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
-//    this->layout()->addWidget(burst_label);
-//    this->layout()->addWidget(arrival_label);
-
-
-//    int height=0;
-//    for (int i = 0; i<this->num_process_chosen.split(" ")[0].toInt(); i++)//convert from QString to int
-//    {
-//        /***creating a line edit and pushing the created line edit to a vector***/
-//        arrival_input = new QLineEdit();
-//        burst_input = new QLineEdit();
-//        Process *p = new Process;
-//        //Creating a pointer to a process to carry any random address initially given by compiler
-//        Processes_Queue.append(p);
-//        // Appending that address to the pointer vector
-//        qDebug()<< "TRIAL : " << burst_input->text();
-//        burst_time.push_back(burst_input);
-//        arrival_time.push_back(arrival_input);
-
-//        ID_Process = new QLabel();
-//        ID_Process->setText(tr("P %1").arg(i));
-//        ID_Process->setGeometry(20,250+height,30,30);
-//        ID_Process->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
-//        arrival_input->setGeometry(60,250+height,80,30);
-//        burst_input->setGeometry(170,250+height,80,30);
-
-//        this->layout()->addWidget(arrival_input);
-//        this->layout()->addWidget(burst_input);
-//        this->layout()->addWidget(ID_Process);
-//        height+=50;
-
-//    }
-
-//    return height;
-//}
-
-//int MainWindow::FCFS_layout(){
-//    int height=0;
-//    qDebug("FCFS");
-//    return height;
-//}
-
-//int MainWindow::RR_layout(){
-//    int height=0;
-//    qDebug("RR");
-//    return height;
-//}
-
-//int MainWindow::PRIORITY_layout(){
-//    int height=0;
-//    qDebug("FCFS");
-//    return height;
-//}

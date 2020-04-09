@@ -60,7 +60,7 @@ public:
 
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    int General_layout();
+//    int General_layout();
     int SJF_layout();
     int FCFS_layout();
     int RR_layout();
