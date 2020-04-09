@@ -310,6 +310,8 @@ void MainWindow::SJF_NONP_Alg(){
 
         int time =0;
         int width_Prev=0;
+
+
         while(Processes_Queue.size() !=0){
             QVector<Process *> ready_processes;
             for(int i=0; i<Processes_Queue.size();i++){
@@ -330,14 +332,14 @@ void MainWindow::SJF_NONP_Alg(){
                     draw_process->setGeometry(300+width_Prev,700,ready_processes[0]->Burst_Time*80,50);
                     this->layout()->addWidget(draw_process);
                     width_Prev=ready_processes[0]->Burst_Time*80;
-                    time=ready_processes[0]->Burst_Time;
+                    time= time + ready_processes[0]->Burst_Time;
                     for(int x=0;x<Processes_Queue.size();x++){
                         if(Processes_Queue[x]->ID == ready_processes[0]->ID){
                            Processes_Queue.erase(Processes_Queue.begin()+x);
                            break;
                         }
                      }
-                    //continue;
+
                 }
                 else if (ready_processes.size()==0)  continue;
 
@@ -359,7 +361,7 @@ void MainWindow::SJF_NONP_Alg(){
                             this->layout()->addWidget(draw_process);
                             width_Prev=ready_processes[j]->Burst_Time*80;
 
-                            time = ready_processes[j]->Burst_Time;
+                            time = time + ready_processes[j]->Burst_Time;
                             for(int x=0;x<Processes_Queue.size();x++){
                                 if(Processes_Queue[x]->ID == ready_processes[j]->ID){
                                    Processes_Queue.erase(Processes_Queue.begin()+x);
@@ -368,6 +370,7 @@ void MainWindow::SJF_NONP_Alg(){
                              }
                             break;
                         }
+
                     }
                 }
         }
