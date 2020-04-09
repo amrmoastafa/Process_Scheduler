@@ -94,6 +94,7 @@ void MainWindow::Get_Data()
         qDebug() <<"Process : " <<Processes_Queue[j]->Process_name<<" Arrival Time is : "<<Processes_Queue[j]->Arrival_Time;
 
         Processes_Queue[j]->Burst_Time = (burst_time[j]->text().toInt());//getting the text written (burst time of process j) from line edit of j
+        Processes_Queue[j]->ID =j;
 
         qDebug() <<"Process : " <<Processes_Queue[j]->Process_name<<" Burst Time is : "<<Processes_Queue[j]->Burst_Time;
         if(Algorithm_dropdown->currentText() == "Priority")
@@ -308,8 +309,8 @@ void MainWindow::SJF_NONP_Alg(){
     for(int i=0; i<Processes_Queue.size(); i++){
         draw_process = new QLabel();
         draw_process->setText(tr("P %1").arg(Processes_Queue[i]->ID));
-        draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: red;");
-        draw_process->setGeometry(250+(Processes_Queue[i]->Burst_Time*100),700,Processes_Queue[i]->Burst_Time*100,50);
+        draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
+        draw_process->setGeometry(250+(Processes_Queue[i]->Burst_Time*100),700,Processes_Queue[i]->Burst_Time*80,50);
         this->layout()->addWidget(draw_process);
     }
 }
