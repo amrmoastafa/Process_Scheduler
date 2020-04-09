@@ -21,7 +21,7 @@ class MainWindow;
 class Process
 {
 public:
-    int Arrival_Time, Burst_Time, Remaining_Time, Priority, Termination_Time;
+    int Arrival_Time, Burst_Time, Remaining_Time, Priority, Termination_Time,ID;
     int TurnAround_Time = Termination_Time - Arrival_Time;
     int Waiting_Time = TurnAround_Time - Burst_Time;
     QString Process_name;
@@ -57,6 +57,9 @@ public:
     QVector <QLineEdit *> arrival_time;
     QVector <QComboBox *> priority_vect;
 
+    /**for drawing**/
+    QLabel *draw_process;
+
 
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -65,6 +68,8 @@ public:
     int FCFS_layout();
     int RR_layout();
     int PRIORITY_layout();
+    void SJF_NONP_Alg();
+    void SJF_P_Alg();
 
 private:
 
@@ -72,7 +77,7 @@ private:
 
 public slots:
     void get_param();
-    void Get_Text();
+    void Get_Data();
 
 };
 

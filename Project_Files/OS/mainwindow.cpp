@@ -76,12 +76,12 @@ void MainWindow:: get_param(){
     Simulate->setGeometry(40,height+270,210,40);
     this->layout()->addWidget(Simulate);
 
-    connect(Simulate,SIGNAL(clicked()),this,SLOT(Get_Text()));
+    connect(Simulate,SIGNAL(clicked()),this,SLOT(Get_Data()));
 }
 
 
 /*Function to get the values stored in the burst and arrival time vectors*/ /***debugging function***/
-void MainWindow::Get_Text()
+void MainWindow::Get_Data()
 {
     //We can use qDebug() Function to view variables as follows:
     //qDebug()<<"This is the value of first element of burst time vector : " <<burst_time[0]->text();
@@ -106,6 +106,8 @@ void MainWindow::Get_Text()
 
     }
 
+    if(Alg_chosen == "SJF" && Preemptive_Checkbox->isChecked() ) SJF_P_Alg();
+    else if (Alg_chosen == "SJF" && !Preemptive_Checkbox->isChecked()) SJF_NONP_Alg();
 }
 
 
@@ -290,4 +292,27 @@ int MainWindow::PRIORITY_layout(){
     this->layout()->addWidget(Preemptive_label);
     height += 50;
     return height;
+}
+
+void MainWindow::SJF_NONP_Alg(){
+    /*sorting according to burst time*/
+    for(int i=0; i<Processes_Queue.size(); i++){
+        for(int j=0; j<Processes_Queue.size(); j++){
+            if(Processes_Queue[j]->Burst_Time >  Processes_Queue[i]->Burst_Time){
+                Process *temp=Processes_Queue[j];
+                Processes_Queue[j]=Processes_Queue[i];
+                Processes_Queue[i]= temp;
+            }
+        }
+    }
+    for(int i=0; i<Processes_Queue.size(); i++){
+        draw_process = new QLabel();
+        draw_process->setText(tr("P %1").arg(Processes_Queue[i]->ID));
+        draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: red;");
+        draw_process->setGeometry(250+(Processes_Queue[i]->Burst_Time*100),700,Processes_Queue[i]->Burst_Time*100,50);
+        this->layout()->addWidget(draw_process);
+    }
+}
+void MainWindow::SJF_P_Alg(){
+    qDebug()<<"Preemptive";
 }
