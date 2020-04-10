@@ -77,7 +77,7 @@ private:
 
 public slots:
     void get_param();
-    void Get_Data();
+    void Get_Text();
 
 };
 

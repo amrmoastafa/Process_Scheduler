@@ -76,13 +76,13 @@ void MainWindow:: get_param(){
     Simulate->setGeometry(40,height+270,210,40);
     this->layout()->addWidget(Simulate);
 
-    connect(Simulate,SIGNAL(clicked()),this,SLOT(Get_Data()));
+    connect(Simulate,SIGNAL(clicked()),this,SLOT(Get_Text()));
 }
 
 
 /*Function to get the values stored in the burst and arrival time vectors*/
 /*also to execute the chose algorithm*/
-void MainWindow::Get_Data()
+void MainWindow::Get_Text()
 {
     //We can use qDebug() Function to view variables as follows:
     //qDebug()<<"This is the value of first element of burst time vector : " <<burst_time[0]->text();
@@ -147,7 +147,9 @@ int MainWindow::SJF_layout(){
         arrival_time.push_back(arrival_input);
 
         ID_Process = new QLabel();
-        ID_Process->setText(tr("P %1").arg(i));
+        ID_Process->setText(tr("P%1").arg(i));
+        //adding the name of the process attribute
+        Processes_Queue[i]->Process_name = ID_Process->text();
         ID_Process->setGeometry(20,250+height,30,30);
         ID_Process->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
         arrival_input->setGeometry(60,250+height,80,30);
@@ -201,7 +203,9 @@ int MainWindow::FCFS_layout(){
         arrival_time.push_back(arrival_input);
 
         ID_Process = new QLabel();
-        ID_Process->setText(tr("P %1").arg(i));
+        ID_Process->setText(tr("P%1").arg(i));
+        //adding the name of the process attribute
+        Processes_Queue[i]->Process_name = ID_Process->text();
         ID_Process->setGeometry(20,250+height,30,30);
         ID_Process->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
         arrival_input->setGeometry(60,250+height,80,30);
@@ -269,8 +273,8 @@ int MainWindow::PRIORITY_layout(){
         ID_Process = new QLabel();
 
         ID_Process->setText(tr("P%1").arg(i));
+        //adding the name of the process attribute
         Processes_Queue[i]->Process_name = ID_Process->text();
-
         ID_Process->setGeometry(20,250+height,30,30);
         ID_Process->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
         arrival_input->setGeometry(60,250+height,40,30);
