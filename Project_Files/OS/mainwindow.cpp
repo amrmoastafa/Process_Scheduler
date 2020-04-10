@@ -8,6 +8,10 @@ MainWindow::MainWindow(QWidget *parent) :
   // ,ui(new Ui::MainWindow)
 {
 
+    Scene = new QGraphicsScene();
+    Scene->setBackgroundBrush(Qt::darkGray);
+    view = new  QGraphicsView(Scene,this);
+    view->setGeometry(300,0,1500,1000);
     toolbar = new QToolBar(this);
     toolbar->setStyleSheet("QToolBar{ background-color:rgb(78,204,163);  color:black; }");
     toolbar->setGeometry(0,0,300,1000);
@@ -110,6 +114,7 @@ void MainWindow::Get_Text()
    /****choose the Algorithm to be executed****/
     if(Alg_chosen == "SJF" && Preemptive_Checkbox->isChecked() ) SJF_P_Alg();
     else if (Alg_chosen == "SJF" && !Preemptive_Checkbox->isChecked()) SJF_NONP_Alg();
+//    else if (Alg_chosen == "FCFS") FCFS_Alg();
 }
 
 
@@ -186,7 +191,6 @@ int MainWindow::FCFS_layout(){
     burst_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
     this->layout()->addWidget(burst_label);
     this->layout()->addWidget(arrival_label);
-
 
     int height=0;
     for (int i = 0; i<this->num_process_chosen.split(" ")[0].toInt(); i++)//convert from QString to int
@@ -335,6 +339,8 @@ void MainWindow::SJF_NONP_Alg(){
                     draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
                     draw_process->setGeometry(300+width_Prev,700,ready_processes[0]->Burst_Time*80,50);
                     this->layout()->addWidget(draw_process);
+                    //                            THIS IS THE PART OF THE DRAWRING SCENE
+                    //                            Scene->addWidget(draw_process);
                     width_Prev=ready_processes[0]->Burst_Time*80;
                     time= time + ready_processes[0]->Burst_Time;
                     for(int x=0;x<Processes_Queue.size();x++){
@@ -365,6 +371,10 @@ void MainWindow::SJF_NONP_Alg(){
                             draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
                             draw_process->setGeometry(300+width_Prev +500,700,ready_processes[j]->Burst_Time*80,50);
                             this->layout()->addWidget(draw_process);
+
+//                            THIS IS THE PART OF THE DRAWRING SCENE
+//                            Scene->addWidget(draw_process);
+
                             width_Prev=ready_processes[j]->Burst_Time*80;
 
                             time = time + ready_processes[j]->Burst_Time;

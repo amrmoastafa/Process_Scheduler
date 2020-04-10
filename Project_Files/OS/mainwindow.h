@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QGraphicsScene>
+#include <QGraphicsView>
 #include <QMainWindow>
 #include <QString>
 #include <QLineEdit>
@@ -32,6 +34,8 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    QGraphicsScene *Scene;
+    QGraphicsView *view;
     QString num_process_chosen,Alg_chosen;
     QLineEdit *num_process_line_edit;
     QLineEdit *arrival_input;
