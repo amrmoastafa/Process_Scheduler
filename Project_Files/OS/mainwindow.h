@@ -85,6 +85,8 @@ public:
     void SJF_NONP_Alg();
     void SJF_P_Alg();
     void FCFS_Alg();
+    void RR_Alg();
+
 
 private:
 
