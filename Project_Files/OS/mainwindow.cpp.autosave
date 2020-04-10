@@ -403,7 +403,7 @@ void MainWindow::SJF_P_Alg(){
 
 
         for(int time =Processes_Queue[0]->Arrival_Time; Processes_Queue.size()!=0; time++ ){
-            qDebug()<<"HI";
+            
             QVector<Process *> ready_processes;
             for(int i=0; i<Processes_Queue.size();i++){
                 /**check the ready processes**/
