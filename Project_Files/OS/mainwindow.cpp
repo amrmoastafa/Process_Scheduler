@@ -407,7 +407,8 @@ void MainWindow::SJF_NONP_Alg(){
                     draw_process->setText(tr("P %1").arg(ready_processes[0]->ID));
                     draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
                     draw_process->setGeometry(300+width_Prev,700,ready_processes[0]->Burst_Time*80,50);
-                    this->layout()->addWidget(draw_process);
+                    this->Scene->addWidget(draw_process);
+                    //this->layout()->addWidget(draw_process);
                     //                            THIS IS THE PART OF THE DRAWRING SCENE
                     //                            Scene->addWidget(draw_process);
                     width_Prev=ready_processes[0]->Burst_Time*80;
@@ -712,9 +713,11 @@ void MainWindow::RR_Alg()
                     draw_process = new QLabel();
                     draw_process->setText(tr("P %1").arg(Processes_Queue[k]->ID));
                     draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
-                    draw_process->setGeometry(300+width_Prev,700,Processes_Queue[k]->quantum_time*80,50);
-                    this->layout()->addWidget(draw_process);
-                    width_Prev=Processes_Queue[k]->quantum_time*80;
+                    draw_process->setGeometry(width_Prev,700,Processes_Queue[k]->quantum_time*25,50);
+                    //this->layout()->addWidget(draw_process);
+                    qDebug()<<Processes_Queue[k]->quantum_time*25;
+                    this->Scene->addWidget(draw_process);
+                    width_Prev+=Processes_Queue[k]->quantum_time*25;
 
                     //decreasing remaining time by quantum
                     Processes_Queue[k]->Remaining_Time -= Processes_Queue[k]->quantum_time;
@@ -728,9 +731,11 @@ void MainWindow::RR_Alg()
                     draw_process = new QLabel();
                     draw_process->setText(tr("P %1").arg(Processes_Queue[k]->ID));
                     draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
-                    draw_process->setGeometry(300+width_Prev,700,Processes_Queue[k]->Remaining_Time*80,50);
-                    this->layout()->addWidget(draw_process);
-                    width_Prev=Processes_Queue[k]->quantum_time*80;
+                    draw_process->setGeometry(width_Prev,700,Processes_Queue[k]->Remaining_Time*25,50);
+                    //this->layout()->addWidget(draw_process);
+                    qDebug()<<Processes_Queue[k]->Remaining_Time*25;
+                    this->Scene->addWidget(draw_process);
+                    width_Prev+=Processes_Queue[k]->Remaining_Time*25;
 
                     //waiting time will be burst time subtracted from current time
                     Processes_Queue[k]->Waiting_Time = time - Processes_Queue[k]->Burst_Time;
