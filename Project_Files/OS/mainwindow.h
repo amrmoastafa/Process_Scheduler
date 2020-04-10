@@ -28,12 +28,19 @@ public:
     int Waiting_Time = TurnAround_Time - Burst_Time;
     QString Process_name;
 };
+class DrawingQueue
+{
+public:
+    QString p_next;
+    int p_width;
+};
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
+    DrawingQueue *Temp;
     QGraphicsScene *Scene;
     QGraphicsView *view;
     QString num_process_chosen,Alg_chosen;
@@ -60,6 +67,7 @@ public:
     QVector <QLineEdit *> burst_time;
     QVector <QLineEdit *> arrival_time;
     QVector <QComboBox *> priority_vect;
+    QVector <DrawingQueue *>  DrawingQueueFCFS;
 
     /**for drawing**/
     QLabel *draw_process;
@@ -74,6 +82,7 @@ public:
     int PRIORITY_layout();
     void SJF_NONP_Alg();
     void SJF_P_Alg();
+    void FCFS_Alg();
 
 private:
 

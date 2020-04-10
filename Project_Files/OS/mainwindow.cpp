@@ -7,15 +7,16 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
   // ,ui(new Ui::MainWindow)
 {
-
+    //Drawing The Scene Where Processes will be drawn
     Scene = new QGraphicsScene();
     Scene->setBackgroundBrush(Qt::darkGray);
     view = new  QGraphicsView(Scene,this);
     view->setGeometry(300,0,1500,1000);
+
+    //Adding Tool bar
     toolbar = new QToolBar(this);
     toolbar->setStyleSheet("QToolBar{ background-color:rgb(78,204,163);  color:black; }");
     toolbar->setGeometry(0,0,300,1000);
-
 
     /****type of scheduler*****/
     type= new QLabel(this);
@@ -114,7 +115,7 @@ void MainWindow::Get_Text()
    /****choose the Algorithm to be executed****/
     if(Alg_chosen == "SJF" && Preemptive_Checkbox->isChecked() ) SJF_P_Alg();
     else if (Alg_chosen == "SJF" && !Preemptive_Checkbox->isChecked()) SJF_NONP_Alg();
-//    else if (Alg_chosen == "FCFS") FCFS_Alg();
+    else if (Alg_chosen == "FCFS") FCFS_Alg();
 }
 
 
@@ -487,4 +488,112 @@ void MainWindow::SJF_P_Alg(){
                 }
         }
 
+}
+
+void MainWindow::FCFS_Alg(){
+    /*sorting according to arrival time*/
+        for(int i=0; i<Processes_Queue.size(); i++){
+            for(int j=0; j<Processes_Queue.size(); j++){
+                if(Processes_Queue[j]->Arrival_Time >  Processes_Queue[i]->Arrival_Time){
+                    Process *temp=Processes_Queue[j];
+                    Processes_Queue[j]=Processes_Queue[i];
+                    Processes_Queue[i]= temp;
+                }
+            }
+        }
+
+        for(int i = 0; i<Processes_Queue.size(); i++) qDebug()<< Processes_Queue[i]->Process_name << " Arrived :" <<Processes_Queue[i]->Arrival_Time;
+//        int time = 0;
+//        for(int i = 0; i < Processes_Queue.size();i++)
+//        {
+//            if( (Processes_Queue[i]->Arrival_Time) > time)
+//            {
+//                Temp->p_next = "Gap";
+//                Temp->p_width =(Processes_Queue[i]->Arrival_Time - time );
+//                DrawingQueueFCFS.push_back(Temp);
+//                time = Processes_Queue[i]->Arrival_Time;
+//                qDebug()<<"Gap";
+//            }else
+//            {
+//                Temp->p_next = Processes_Queue[i]->Process_name;
+//                Temp->p_width = (Processes_Queue[i]->Burst_Time);
+//                DrawingQueueFCFS.push_back(Temp);
+//                time = time + Processes_Queue[i]->Burst_Time;
+//                qDebug()<< Processes_Queue[i]->Process_name;
+//            }
+//        }
+//        int time =Processes_Queue[0]->Arrival_Time;
+//        int width_Prev=0;
+
+
+//        while(Processes_Queue.size() !=0){
+//            QVector<Process *> ready_processes;
+//            for(int i=0; i<Processes_Queue.size();i++){
+//                /**check the ready processes**/
+//                if(Processes_Queue[i]->Arrival_Time<=time){
+
+//                    ready_processes.push_back(Processes_Queue[i]);
+//                }
+//             }
+
+//                // If only one process is ready draw it
+//                if(ready_processes.size() == 1){
+//                    //draw
+//                    qDebug()<<ready_processes[0]->ID;
+//                    draw_process = new QLabel();
+//                    draw_process->setText(tr("P %1").arg(ready_processes[0]->ID));
+//                    draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
+//                    draw_process->setGeometry(300+width_Prev,700,ready_processes[0]->Burst_Time*80,50);
+//                    this->layout()->addWidget(draw_process);
+//                    //                            THIS IS THE PART OF THE DRAWRING SCENE
+//                    //                            Scene->addWidget(draw_process);
+//                    width_Prev=ready_processes[0]->Burst_Time*80;
+//                    time= time + ready_processes[0]->Burst_Time;
+//                    for(int x=0;x<Processes_Queue.size();x++){
+//                        if(Processes_Queue[x]->ID == ready_processes[0]->ID){
+//                           Processes_Queue.erase(Processes_Queue.begin()+x);
+//                           break;
+//                        }
+//                     }
+
+//                }
+//                else if (ready_processes.size()==0)  continue;
+
+//                /**if more than 1 process is ready compare their burst time**/
+//                else{
+//                    int min_burst= ready_processes[0]->Burst_Time;
+//                    for(int j=0; j<ready_processes.size();j++){
+//                       if(ready_processes[j]->Burst_Time < min_burst) min_burst=ready_processes[j]->Burst_Time;
+//                    }
+
+//                    for(int j=0; j<ready_processes.size();j++){
+//                        //el min burst ersmha we ems7ha mn el Queue
+//                        if(ready_processes[j]->Burst_Time == min_burst){
+//                            qDebug()<<ready_processes[j]->ID;
+
+//                            //Draw
+//                            draw_process = new QLabel();
+//                            draw_process->setText(tr("P %1").arg(ready_processes[j]->ID));
+//                            draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
+//                            draw_process->setGeometry(300+width_Prev +500,700,ready_processes[j]->Burst_Time*80,50);
+//                            this->layout()->addWidget(draw_process);
+
+////                            THIS IS THE PART OF THE DRAWRING SCENE
+////                            Scene->addWidget(draw_process);
+
+//                            width_Prev=ready_processes[j]->Burst_Time*80;
+
+//                            time = time + ready_processes[j]->Burst_Time;
+//                            for(int x=0;x<Processes_Queue.size();x++){
+//                                if(Processes_Queue[x]->ID == ready_processes[j]->ID){
+//                                   Processes_Queue.erase(Processes_Queue.begin()+x);
+//                                   break;
+//                                }
+//                             }
+//                            break;
+//                        }
+
+//                    }
+//                }
+//        }
 }
