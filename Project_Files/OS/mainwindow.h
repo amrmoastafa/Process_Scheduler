@@ -23,7 +23,7 @@ class MainWindow;
 class Process
 {
 public:
-    int Arrival_Time, Burst_Time, Remaining_Time, Priority, Termination_Time,ID;
+    int Arrival_Time, Burst_Time, Remaining_Time, Priority, Termination_Time,ID,quantum_time;
     int TurnAround_Time = Termination_Time - Arrival_Time;
     int Waiting_Time = TurnAround_Time - Burst_Time;
     QString Process_name;
@@ -47,6 +47,7 @@ public:
     QLineEdit *num_process_line_edit;
     QLineEdit *arrival_input;
     QLineEdit *burst_input;
+    QLineEdit *time_quantum_input;
     QComboBox *priority_input;
     QComboBox *Algorithm_dropdown;
     QPushButton *m_button;
@@ -55,6 +56,7 @@ public:
     QLabel *N_process;
     QLabel *burst_label;
     QLabel *priortiy_label;
+    QLabel *time_quantum_label;
     QLabel *arrival_label;
     QLabel *ID_Process;
     QLabel *Preemptive_label;

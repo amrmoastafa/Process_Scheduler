@@ -110,12 +110,22 @@ void MainWindow::Get_Text()
             qDebug() <<"Process : " <<Processes_Queue[j]->Process_name<<" Priority is : "<<Processes_Queue[j]->Priority;
 
         }
+	
 
     }
    /****choose the Algorithm to be executed****/
     if(Alg_chosen == "SJF" && Preemptive_Checkbox->isChecked() ) SJF_P_Alg();
     else if (Alg_chosen == "SJF" && !Preemptive_Checkbox->isChecked()) SJF_NONP_Alg();
     else if (Alg_chosen == "FCFS") FCFS_Alg();
+    else if (Alg_chosen == "Round Robin")
+    {
+        /*Initializing quantum time*/
+        for(int l=0; l<Processes_Queue.size();l++)
+        {
+            Processes_Queue[l]->quantum_time=time_quantum_input->text().toInt();
+        }
+        RR_Alg();
+    }
 }
 
 
@@ -227,7 +237,65 @@ int MainWindow::FCFS_layout(){
 }
 
 int MainWindow::RR_layout(){
-    int height=0;
+    /*Time Quantum*/
+    time_quantum_label = new QLabel();
+    time_quantum_label->setGeometry(50,200,100,30);
+
+    time_quantum_label->setText("Time Quantum");
+    time_quantum_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
+
+    time_quantum_input = new QLineEdit();
+    time_quantum_input->setGeometry(175,200,80,30);
+
+    this->layout()->addWidget(time_quantum_label);
+    this->layout()->addWidget(time_quantum_input);
+
+    /*setting the Arrival an burst time label*/
+    arrival_label = new QLabel("Arrival Time");
+    burst_label = new QLabel("Burst Time");
+
+    arrival_label->setGeometry(70,240,80,30);
+    burst_label->setGeometry(170,240,80,30);
+
+    arrival_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
+    burst_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
+
+    this->layout()->addWidget(burst_label);
+    this->layout()->addWidget(arrival_label);
+
+    /*Creating a new process and pushing time quantum to it*/
+
+
+
+    int height=40;
+
+    for (int i = 0; i<this->num_process_chosen.split(" ")[0].toInt(); i++)
+    {
+        arrival_input = new QLineEdit();
+        burst_input = new QLineEdit();
+
+        Process *p = new Process;
+        Processes_Queue.append(p);
+
+        //p->quantum_time=this->time_quantum_input->text().toInt();
+
+        burst_time.push_back(burst_input);
+        arrival_time.push_back(arrival_input);
+
+        ID_Process = new QLabel();
+        ID_Process->setText(tr("P %1").arg(i));
+        ID_Process->setGeometry(20,250+height,30,30);
+        ID_Process->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
+        arrival_input->setGeometry(60,250+height,80,30);
+        burst_input->setGeometry(170,250+height,80,30);
+
+        this->layout()->addWidget(arrival_input);
+        this->layout()->addWidget(burst_input);
+        this->layout()->addWidget(ID_Process);
+        height+=50;
+
+    }
+
     qDebug("RR");
     return height;
 }
@@ -596,4 +664,86 @@ void MainWindow::FCFS_Alg(){
 //                    }
 //                }
 //        }
+}
+
+void MainWindow::RR_Alg()
+{
+    /*sorting according to arrival time*/
+    for(int i=0; i<Processes_Queue.size(); i++)
+    {
+        for(int j=0; j<Processes_Queue.size(); j++)
+        {
+            if(Processes_Queue[j]->Arrival_Time >  Processes_Queue[i]->Arrival_Time)
+            {
+                Process *temp=Processes_Queue[j];
+                Processes_Queue[j]=Processes_Queue[i];
+                Processes_Queue[i]= temp;
+            }
+        }
+    }
+
+    //initializing remaining time = burst time
+    for(int s=0; s<Processes_Queue.size(); s++)
+    {
+        Processes_Queue[s]->Remaining_Time=Processes_Queue[s]->Burst_Time;
+    }
+    qDebug()<< "HI " ;
+
+    int time = 0;
+    int width_Prev=0;
+    while(1)
+    {
+        bool vector_done = true;
+        qDebug()<< "HI 2";
+        //looping through all processes
+        for(int k = 0; k < Processes_Queue.size(); k++)
+        {
+            qDebug()<< "process no:" << k;
+            if( Processes_Queue[k]->Remaining_Time> 0)
+            {
+                vector_done = false;
+                int l =Processes_Queue[k]->Remaining_Time;
+                int p=Processes_Queue[k]->quantum_time;
+                if(Processes_Queue[k]->Remaining_Time > Processes_Queue[k]->quantum_time)
+                {
+                    //increasing time by a quantum and drawing that time
+                    time+=Processes_Queue[k]->quantum_time;
+
+                    draw_process = new QLabel();
+                    draw_process->setText(tr("P %1").arg(Processes_Queue[k]->ID));
+                    draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
+                    draw_process->setGeometry(300+width_Prev,700,Processes_Queue[k]->quantum_time*80,50);
+                    this->layout()->addWidget(draw_process);
+                    width_Prev=Processes_Queue[k]->quantum_time*80;
+
+                    //decreasing remaining time by quantum
+                    Processes_Queue[k]->Remaining_Time -= Processes_Queue[k]->quantum_time;
+                }
+
+                else
+                {
+                    time += Processes_Queue[k]->Remaining_Time;
+
+                    //drawing the remaining time
+                    draw_process = new QLabel();
+                    draw_process->setText(tr("P %1").arg(Processes_Queue[k]->ID));
+                    draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
+                    draw_process->setGeometry(300+width_Prev,700,Processes_Queue[k]->Remaining_Time*80,50);
+                    this->layout()->addWidget(draw_process);
+                    width_Prev=Processes_Queue[k]->quantum_time*80;
+
+                    //waiting time will be burst time subtracted from current time
+                    Processes_Queue[k]->Waiting_Time = time - Processes_Queue[k]->Burst_Time;
+
+
+                    //making remaining time = 0 to indicate process is done
+                    Processes_Queue[k]->Remaining_Time=0;
+                }
+            }
+        }
+
+        if(vector_done == true)
+            break;
+    }
+
 }
