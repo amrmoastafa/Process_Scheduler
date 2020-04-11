@@ -16,7 +16,8 @@
 #include <QDebug>
 #include <QCheckBox>
 #include <QProcess>
-#include <QScrollArea>
+#include <QMessageBox>
+
 
 
 namespace Ui {
@@ -65,6 +66,7 @@ public:
     QPushButton *Ok;
     QPushButton *Simulate;
     QCheckBox *Preemptive_Checkbox;
+    QMessageBox *msg_box;
     QVector <Process *> Processes_Queue;
     //  -)The vector that contains pointers to processes can be treated  as queue
     //  -)Each element represents a process carrying its information
@@ -75,6 +77,7 @@ public:
 
     /**for drawing**/
     QLabel *draw_process;
+    QLabel *draw_time;
     QGraphicsScene *scene_toolbar;
     QScrollArea * scrollArea;
     QGraphicsView *view_toolbar;
