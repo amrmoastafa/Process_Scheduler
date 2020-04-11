@@ -64,6 +64,7 @@ public:
     QLabel *ID_Process;
     QLabel *Preemptive_label;
     QPushButton *Ok;
+    QPushButton *restart;
     QPushButton *Simulate;
     QCheckBox *Preemptive_Checkbox;
     QMessageBox *msg_box;
@@ -102,6 +103,7 @@ private:
 public slots:
     void get_param();
     void Get_Text();
+    void again();
 
 };
 

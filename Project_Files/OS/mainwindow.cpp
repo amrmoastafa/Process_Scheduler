@@ -24,14 +24,6 @@ MainWindow::MainWindow(QWidget *parent) :
     toolbar->setStyleSheet("QToolBar{ background-color:rgb(78,204,163);  color:black; }");
     toolbar->setGeometry(0,0,300,20000);
     this->scene_toolbar->addWidget(toolbar);
-    //scrollArea = new QScrollArea(this);
-
-    //scrollArea->setWidget(toolbar);
-    //scrollArea->setGeometry(0,0,300,1200);
-
-  //  scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-
-   // scrollArea->viewport()->autoFillBackground();
 
     /****type of scheduler*****/
     type= new QLabel();
@@ -63,10 +55,17 @@ MainWindow::MainWindow(QWidget *parent) :
     Ok = new QPushButton("OK");
     Ok->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 10%;} "
                       "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
-    Ok->setGeometry(40,180,210,40);
+    Ok->setGeometry(60,180,210,40);
     this->scene_toolbar->addWidget(Ok);
 
     connect(Ok,SIGNAL(clicked()),this,SLOT(get_param())) ;
+
+    restart = new QPushButton("♺");
+    restart->setStyleSheet(" QPushButton{ background-color:rgb(208,47,47); color:white; font-size: 17px; font-family: Arial;border-radius: 50%;} "
+                      "QPushButton:hover { background-color: white; border-radius:50%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
+    restart->setGeometry(20,180,30,40);
+    this->scene_toolbar->addWidget(restart);
+    connect(restart,SIGNAL(clicked()),this,SLOT(again())) ;
 
     //ui->setupUi(this);
 }
@@ -143,6 +142,7 @@ void MainWindow::Get_Text()
 	
 
     }
+
    /****choose the Algorithm to be executed****/
     if(Alg_chosen == "SJF" && Preemptive_Checkbox->isChecked() ) SJF_P_Alg();
     else if (Alg_chosen == "SJF" && !Preemptive_Checkbox->isChecked()) SJF_NONP_Alg();
@@ -797,5 +797,11 @@ void MainWindow::RR_Alg()
         if(vector_done == true)
             break;
     }
+
+}
+
+//this function is supposed to delete and start a new algorithm
+void MainWindow::again(){
+    Simulate->deleteLater();
 
 }
