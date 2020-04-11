@@ -36,6 +36,7 @@ class DrawingQueue
 public:
     QString p_next;
     int p_width;
+    int time_start;
 };
 
 class MainWindow : public QMainWindow
@@ -43,6 +44,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    QPushButton *Process_drawn;
     DrawingQueue *Temp;
     QGraphicsScene *Scene;
     QGraphicsView *view;
@@ -74,7 +76,7 @@ public:
     QVector <QLineEdit *> burst_time;
     QVector <QLineEdit *> arrival_time;
     QVector <QComboBox *> priority_vect;
-    QVector <DrawingQueue *>  DrawingQueueFCFS;
+    QVector <DrawingQueue >  DrawingQueueFCFS;
 
     /**for drawing**/
     QLabel *draw_process;
