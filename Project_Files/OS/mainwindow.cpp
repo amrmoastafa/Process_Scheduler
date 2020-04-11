@@ -831,6 +831,8 @@ void MainWindow::RR_Alg()
 //this function is supposed to delete and start a new algorithm
 void MainWindow::again(){
     Simulate->deleteLater();
+    burst_time.clear();
+    arrival_time.clear();
     if(Alg_chosen=="SJF") {
         Preemptive_label->deleteLater();
         Preemptive_Checkbox->deleteLater();
@@ -855,6 +857,10 @@ void MainWindow::again(){
             height+=50;
 
         }
+        deletechart = new QLabel();
+        deletechart->setGeometry(0,700,1000,50);
+        deletechart->setStyleSheet("background-color:rgb(128,128,128);");
+        Scene->addWidget(deletechart);
        // draw_process->deleteLater();
     }
 

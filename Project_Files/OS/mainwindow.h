@@ -85,6 +85,7 @@ public:
     QLabel *deletelabel;
     QLabel *deletelabel2;
     QLabel *deletelabel3;
+    QLabel *deletechart;
 
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
