@@ -82,6 +82,9 @@ public:
     QGraphicsScene *scene_toolbar;
     QScrollArea * scrollArea;
     QGraphicsView *view_toolbar;
+    QLabel *deletelabel;
+    QLabel *deletelabel2;
+    QLabel *deletelabel3;
 
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
