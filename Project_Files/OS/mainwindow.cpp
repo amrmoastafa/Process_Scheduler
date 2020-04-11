@@ -13,38 +13,57 @@ MainWindow::MainWindow(QWidget *parent) :
     view = new  QGraphicsView(Scene,this);
     view->setGeometry(300,0,1500,1000);
 
+    scene_toolbar= new QGraphicsScene();
+    view_toolbar= new QGraphicsView(scene_toolbar,this);
+    view_toolbar->setGeometry(0,0,300,1000);
+
     //Adding Tool bar
-    toolbar = new QToolBar(this);
+
+    toolbar = new QToolBar();
     toolbar->setStyleSheet("QToolBar{ background-color:rgb(78,204,163);  color:black; }");
-    toolbar->setGeometry(0,0,300,1000);
+    toolbar->setGeometry(0,0,300,20000);
+    this->scene_toolbar->addWidget(toolbar);
+    //scrollArea = new QScrollArea(this);
+
+    //scrollArea->setWidget(toolbar);
+    //scrollArea->setGeometry(0,0,300,1200);
+
+  //  scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+
+   // scrollArea->viewport()->autoFillBackground();
 
     /****type of scheduler*****/
-    type= new QLabel(this);
+    type= new QLabel();
     type->setText("Scheduler Type");
     type->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
     type->setGeometry(10,30,120,30);
+    this->scene_toolbar->addWidget(type);
 
-    Algorithm_dropdown = new QComboBox(this);
+    Algorithm_dropdown = new QComboBox();
     Algorithm_dropdown->setStyleSheet("background-color:white;");
     Algorithm_dropdown->setGeometry(150,30,120,30);
     Algorithm_dropdown->addItems({"FCFS","SJF","Round Robin","Priority"});
+    this->scene_toolbar->addWidget(Algorithm_dropdown);
 
     /******number of process input*****/
-    N_process= new QLabel (this);
+    N_process= new QLabel ();
     N_process->setText("Number of process");
     N_process->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
-    N_process->setGeometry(10,90,130,30);
+    N_process->setGeometry(10,130,130,30);
+    this->scene_toolbar->addWidget(N_process);
 
-    num_process_line_edit= new   QLineEdit(this);
-    num_process_line_edit->setGeometry(150,90,120,30);
+    num_process_line_edit= new QLineEdit();
+    num_process_line_edit->setGeometry(150,130,120,30);
     num_process_line_edit->setStyleSheet("background-color:white;");
     QString p= num_process_line_edit->text();
+    this->scene_toolbar->addWidget(num_process_line_edit);
 
 
-    Ok = new QPushButton("OK",this);
-    Ok->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 4px;} "
+    Ok = new QPushButton("OK");
+    Ok->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 10%;} "
                       "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
-    Ok->setGeometry(40,150,210,40);
+    Ok->setGeometry(40,180,210,40);
+    this->scene_toolbar->addWidget(Ok);
 
     connect(Ok,SIGNAL(clicked()),this,SLOT(get_param())) ;
 
@@ -75,11 +94,21 @@ void MainWindow:: get_param(){
 
 
     Simulate = new QPushButton("Simulate");
+
     Simulate->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 4px;} "
                             "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
 
-    Simulate->setGeometry(40,height+270,210,40);
-    this->layout()->addWidget(Simulate);
+    Simulate->setGeometry(40,height+320,210,40);
+    //this->layout()->addWidget(Simulate);
+    //Simulate->setGeometry(40,150,210,40);
+   // Simulate->setFixedSize(40,200,1000,4000);
+    // Simulate->setMinimumWidth(210);
+     //Simulate->setMinimumHeight(40);
+
+    //toolbar->addWidget(Simulate);
+
+this->scene_toolbar->addWidget(Simulate);
+
 
     connect(Simulate,SIGNAL(clicked()),this,SLOT(Get_Text()));
 }
@@ -138,14 +167,18 @@ int MainWindow::SJF_layout(){
     /*setting the Arrival an burst time label*/
     arrival_label = new QLabel();
     burst_label = new QLabel();
-    arrival_label->setGeometry(70,200,80,30);
-    burst_label->setGeometry(180,200,80,30);
+    arrival_label->setGeometry(70,250,80,30);
+    burst_label->setGeometry(180,250,80,30);
     arrival_label->setText("Arrival Time");
     burst_label->setText("Burst Time");
     arrival_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
     burst_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
-    this->layout()->addWidget(burst_label);
-    this->layout()->addWidget(arrival_label);
+
+    this->scene_toolbar->addWidget(arrival_label);
+    this->scene_toolbar->addWidget(burst_label);
+    //this->layout()->addWidget(burst_label);
+    //this->layout()->addWidget(arrival_label);
+    //toolbar->addWidget(arrival_label);
 
 
     int height=0;
@@ -166,23 +199,26 @@ int MainWindow::SJF_layout(){
         ID_Process->setText(tr("P%1").arg(i));
         //adding the name of the process attribute
         Processes_Queue[i]->Process_name = ID_Process->text();
-        ID_Process->setGeometry(20,250+height,30,30);
+        ID_Process->setGeometry(20,300+height,30,30);
         ID_Process->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
-        arrival_input->setGeometry(60,250+height,80,30);
-        burst_input->setGeometry(170,250+height,80,30);
+        arrival_input->setGeometry(60,300+height,80,30);
+        burst_input->setGeometry(170,300+height,80,30);
 
-        this->layout()->addWidget(arrival_input);
-        this->layout()->addWidget(burst_input);
-        this->layout()->addWidget(ID_Process);
+        this->scene_toolbar->addWidget(arrival_input);
+        this->scene_toolbar->addWidget(burst_input);
+        this->scene_toolbar->addWidget(ID_Process);
+        //this->layout()->addWidget(arrival_input);
+        //this->layout()->addWidget(burst_input);
+        //this->layout()->addWidget(ID_Process);
         height+=50;
 
     }
     Preemptive_Checkbox = new QCheckBox();
     Preemptive_Checkbox->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
-    Preemptive_Checkbox->setGeometry(80,height+270,18,18);
+    Preemptive_Checkbox->setGeometry(80,height+320,18,18);
     Preemptive_label = new QLabel("Pre-emptive");
     Preemptive_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
-    Preemptive_label->setGeometry(110,height+270,80,18);
+    Preemptive_label->setGeometry(110,height+320,80,18);
     this->layout()->addWidget(Preemptive_Checkbox);
     this->layout()->addWidget(Preemptive_label);
     height += 50;
@@ -194,8 +230,8 @@ int MainWindow::FCFS_layout(){
     /*setting the Arrival an burst time label*/
     arrival_label = new QLabel();
     burst_label = new QLabel();
-    arrival_label->setGeometry(70,200,80,30);
-    burst_label->setGeometry(180,200,80,30);
+    arrival_label->setGeometry(70,250,80,30);
+    burst_label->setGeometry(180,250,80,30);
     arrival_label->setText("Arrival Time");
     burst_label->setText("Burst Time");
     arrival_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
@@ -221,10 +257,10 @@ int MainWindow::FCFS_layout(){
         ID_Process->setText(tr("P%1").arg(i));
         //adding the name of the process attribute
         Processes_Queue[i]->Process_name = ID_Process->text();
-        ID_Process->setGeometry(20,250+height,30,30);
+        ID_Process->setGeometry(20,300+height,30,30);
         ID_Process->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
-        arrival_input->setGeometry(60,250+height,80,30);
-        burst_input->setGeometry(170,250+height,80,30);
+        arrival_input->setGeometry(60,300+height,80,30);
+        burst_input->setGeometry(170,300+height,80,30);
 
         this->layout()->addWidget(arrival_input);
         this->layout()->addWidget(burst_input);
@@ -239,13 +275,13 @@ int MainWindow::FCFS_layout(){
 int MainWindow::RR_layout(){
     /*Time Quantum*/
     time_quantum_label = new QLabel();
-    time_quantum_label->setGeometry(50,200,100,30);
+    time_quantum_label->setGeometry(50,250,100,30);
 
     time_quantum_label->setText("Time Quantum");
     time_quantum_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
 
     time_quantum_input = new QLineEdit();
-    time_quantum_input->setGeometry(175,200,80,30);
+    time_quantum_input->setGeometry(175,250,80,30);
 
     this->layout()->addWidget(time_quantum_label);
     this->layout()->addWidget(time_quantum_input);
@@ -254,8 +290,8 @@ int MainWindow::RR_layout(){
     arrival_label = new QLabel("Arrival Time");
     burst_label = new QLabel("Burst Time");
 
-    arrival_label->setGeometry(70,240,80,30);
-    burst_label->setGeometry(170,240,80,30);
+    arrival_label->setGeometry(70,300,80,30);
+    burst_label->setGeometry(180,300,80,30);
 
     arrival_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
     burst_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
@@ -284,10 +320,10 @@ int MainWindow::RR_layout(){
 
         ID_Process = new QLabel();
         ID_Process->setText(tr("P %1").arg(i));
-        ID_Process->setGeometry(20,250+height,30,30);
+        ID_Process->setGeometry(20,320+height,30,30);
         ID_Process->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
-        arrival_input->setGeometry(60,250+height,80,30);
-        burst_input->setGeometry(170,250+height,80,30);
+        arrival_input->setGeometry(60,320+height,80,30);
+        burst_input->setGeometry(170,320+height,80,30);
 
         this->layout()->addWidget(arrival_input);
         this->layout()->addWidget(burst_input);
@@ -304,11 +340,11 @@ int MainWindow::PRIORITY_layout(){
     /*setting the Arrival an burst time label*/
     arrival_label = new QLabel("Arrival Time");
     burst_label = new QLabel("Burst Time");
-    arrival_label->setGeometry(40,200,80,30);
-    burst_label->setGeometry(130,200,80,30);
+    arrival_label->setGeometry(40,250,80,30);
+    burst_label->setGeometry(130,250,80,30);
 
     priortiy_label = new QLabel("Priority");
-    priortiy_label->setGeometry(220,200,50,30);
+    priortiy_label->setGeometry(220,250,50,30);
     priortiy_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
     this->layout()->addWidget(priortiy_label);
 
@@ -331,7 +367,7 @@ int MainWindow::PRIORITY_layout(){
         priority_input = new QComboBox();
         priority_vect.push_back(priority_input);
         priority_input->addItems({"1","2","3","4","5"});
-        priority_input->setGeometry(220,250+height,40,30);
+        priority_input->setGeometry(220,300+height,40,30);
 
         this->layout()->addWidget(priority_input);
 
@@ -348,10 +384,10 @@ int MainWindow::PRIORITY_layout(){
         ID_Process->setText(tr("P%1").arg(i));
         //adding the name of the process attribute
         Processes_Queue[i]->Process_name = ID_Process->text();
-        ID_Process->setGeometry(20,250+height,30,30);
+        ID_Process->setGeometry(20,300+height,30,30);
         ID_Process->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
-        arrival_input->setGeometry(60,250+height,40,30);
-        burst_input->setGeometry(140,250+height,40,30);
+        arrival_input->setGeometry(60,300+height,40,30);
+        burst_input->setGeometry(140,300+height,40,30);
 
         this->layout()->addWidget(priority_input);
         this->layout()->addWidget(arrival_input);
@@ -363,10 +399,10 @@ int MainWindow::PRIORITY_layout(){
     }
     Preemptive_Checkbox = new QCheckBox();
     Preemptive_Checkbox->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
-    Preemptive_Checkbox->setGeometry(80,height+270,18,18);
+    Preemptive_Checkbox->setGeometry(80,height+320,18,18);
     Preemptive_label = new QLabel("Pre-emptive");
     Preemptive_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
-    Preemptive_label->setGeometry(110,height+270,80,18);
+    Preemptive_label->setGeometry(110,height+320,80,18);
     this->layout()->addWidget(Preemptive_Checkbox);
     this->layout()->addWidget(Preemptive_label);
     height += 50;
@@ -388,7 +424,6 @@ void MainWindow::SJF_NONP_Alg(){
         int time =Processes_Queue[0]->Arrival_Time;
         int width_Prev=0;
 
-
         while(Processes_Queue.size() !=0){
             QVector<Process *> ready_processes;
             for(int i=0; i<Processes_Queue.size();i++){
@@ -406,12 +441,12 @@ void MainWindow::SJF_NONP_Alg(){
                     draw_process = new QLabel();
                     draw_process->setText(tr("P %1").arg(ready_processes[0]->ID));
                     draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
-                    draw_process->setGeometry(300+width_Prev,700,ready_processes[0]->Burst_Time*80,50);
+                    draw_process->setGeometry(200+width_Prev,700,50,50);
                     this->Scene->addWidget(draw_process);
                     //this->layout()->addWidget(draw_process);
                     //                            THIS IS THE PART OF THE DRAWRING SCENE
-                    //                            Scene->addWidget(draw_process);
-                    width_Prev=ready_processes[0]->Burst_Time*80;
+                     //       Scene->addWidget(draw_process);
+                    width_Prev=width_Prev+50;
                     time= time + ready_processes[0]->Burst_Time;
                     for(int x=0;x<Processes_Queue.size();x++){
                         if(Processes_Queue[x]->ID == ready_processes[0]->ID){
@@ -439,13 +474,13 @@ void MainWindow::SJF_NONP_Alg(){
                             draw_process = new QLabel();
                             draw_process->setText(tr("P %1").arg(ready_processes[j]->ID));
                             draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
-                            draw_process->setGeometry(300+width_Prev +500,700,ready_processes[j]->Burst_Time*80,50);
-                            this->layout()->addWidget(draw_process);
+                            draw_process->setGeometry(300+width_Prev +500,700,50,50);
+                            //this->layout()->addWidget(draw_process);
+                            this->Scene->addWidget(draw_process);
 
 //                            THIS IS THE PART OF THE DRAWRING SCENE
 //                            Scene->addWidget(draw_process);
-
-                            width_Prev=ready_processes[j]->Burst_Time*80;
+                            width_Prev=width_Prev+50;
 
                             time = time + ready_processes[j]->Burst_Time;
                             for(int x=0;x<Processes_Queue.size();x++){

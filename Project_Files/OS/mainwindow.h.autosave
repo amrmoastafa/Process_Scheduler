@@ -16,7 +16,7 @@
 #include <QDebug>
 #include <QCheckBox>
 #include <QProcess>
-#include <QScrollArea>
+#include <Qtch
 
 
 namespace Ui {
