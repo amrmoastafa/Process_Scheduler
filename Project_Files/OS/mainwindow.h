@@ -27,9 +27,10 @@ class MainWindow;
 class Process
 {
 public:
-    int Arrival_Time, Burst_Time, Remaining_Time, Priority, Termination_Time,ID,quantum_time;
-    int TurnAround_Time = Termination_Time - Arrival_Time;
-    int Waiting_Time = TurnAround_Time - Burst_Time;
+    float Arrival_Time, Burst_Time, Remaining_Time, Termination_Time;
+    int Priority,ID,quantum_time;
+    float TurnAround_Time = Termination_Time - Arrival_Time;
+    float Waiting_Time = TurnAround_Time - Burst_Time;
     QString Process_name;
 };
 class DrawingQueue

@@ -124,11 +124,11 @@ void MainWindow::Get_Text()
 
     for(int j = 0; j<burst_time.size(); j++)
     {
-        Processes_Queue[j]->Arrival_Time = (arrival_time[j]->text().toInt());
+        Processes_Queue[j]->Arrival_Time = (arrival_time[j]->text().toFloat());
 
         qDebug() <<"Process : " <<Processes_Queue[j]->Process_name<<" Arrival Time is : "<<Processes_Queue[j]->Arrival_Time;
 
-        Processes_Queue[j]->Burst_Time = (burst_time[j]->text().toInt());//getting the text written (burst time of process j) from line edit of j
+        Processes_Queue[j]->Burst_Time = (burst_time[j]->text().toFloat());//getting the text written (burst time of process j) from line edit of j
         Processes_Queue[j]->ID =j;
 
         qDebug() <<"Process : " <<Processes_Queue[j]->Process_name<<" Burst Time is : "<<Processes_Queue[j]->Burst_Time;
@@ -434,8 +434,8 @@ void MainWindow::SJF_NONP_Alg(){
         }
 
         //int time =Processes_Queue[0]->Arrival_Time;
-        int time=0;
-        int width_Prev=0;
+        float time=0;
+        float width_Prev=0;
 
         while(Processes_Queue.size() !=0){
             QVector<Process *> ready_processes;
@@ -503,7 +503,7 @@ void MainWindow::SJF_NONP_Alg(){
                 else{
                     QVector<int>IDs;
 
-                    int min_burst= ready_processes[0]->Burst_Time;
+                    float min_burst= ready_processes[0]->Burst_Time;
                     for(int j=0; j<ready_processes.size();j++){
                        if(ready_processes[j]->Burst_Time < min_burst) min_burst=ready_processes[j]->Burst_Time;
                     }
@@ -562,7 +562,7 @@ void MainWindow::SJF_NONP_Alg(){
         draw_time->setText(tr(" %1").arg(time));
         draw_time->setGeometry(width_Prev,750,60,50);
         this->Scene->addWidget(draw_time);
-        int sum=0;
+        float sum=0;
         for(int q=0;q<arrive.size();q++){
             qDebug()<<arrive[q]->ID << "waiting time is"<<arrive[q]->Waiting_Time;
             sum=sum+arrive[q]->Waiting_Time;
