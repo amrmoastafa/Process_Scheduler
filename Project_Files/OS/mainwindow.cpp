@@ -958,7 +958,9 @@ void MainWindow::RR_Alg()
     qDebug()<< "HI " ;
 
     int time = 0;
+    int gap=0;
     int width_Prev=0;
+    int first_time=1;
     while(1)
     {
         bool vector_done = true;
@@ -967,53 +969,145 @@ void MainWindow::RR_Alg()
         for(int k = 0; k < Processes_Queue.size(); k++)
         {
             qDebug()<< "process no:" << k;
-            if( Processes_Queue[k]->Remaining_Time> 0)
+
+
+            //checking for gap in the beginning
+            if(Processes_Queue[0]->Arrival_Time>0 && k==0 && first_time)
+            {
+                     gap=Processes_Queue[0]->Arrival_Time;
+                     time+=gap;
+
+                     draw_process = new QLabel();
+                     draw_process->setText("GAP");
+                     draw_process->setStyleSheet("background-color:white;color:black; border-width: 1px; border-style:solid; border-color: black;");
+                     draw_process->setGeometry(width_Prev,700,gap*25,50) ;
+                     //this->layout()->addWidget(draw_process);
+                     qDebug()<<"GAP: "<<gap*25;
+                     this->Scene->addWidget(draw_process);
+                     width_Prev+=gap*25;
+
+            }
+
+            //handling when the current process remainig time is greater than quantum
+            //where if it is greater and there is still time to the next process
+            //current process is drawn untill arrival of next process
+            // also handles situation of assigning each process a quantum of time
+            if( Processes_Queue[k]->Remaining_Time > Processes_Queue[k]->quantum_time)
             {
                 vector_done = false;
-                int l =Processes_Queue[k]->Remaining_Time;
-                int p=Processes_Queue[k]->quantum_time;
-                if(Processes_Queue[k]->Remaining_Time > Processes_Queue[k]->quantum_time)
+                //int l =Processes_Queue[k]->Remaining_Time;
+                //int p=Processes_Queue[k]->quantum_time;
+
+
+                if(k<Processes_Queue.size()-1)
                 {
-                    //increasing time by a quantum and drawing that time
-                    time+=Processes_Queue[k]->quantum_time;
+                    if(Processes_Queue[k+1]->Arrival_Time >time && Processes_Queue[k]->Remaining_Time>0)
+                    {
+                        int diff=Processes_Queue[k]->Arrival_Time+Processes_Queue[k]->Burst_Time;
+                        if(diff>Processes_Queue[k+1]->Arrival_Time)
+                        {
+                            diff=Processes_Queue[k+1]->quantum_time;
+                            time+=diff;
+                        }
+                        else
+                        {
+                            time+=Processes_Queue[k]->Burst_Time;
+                            diff=Processes_Queue[k]->Burst_Time;
+                        }
+                        //increasing time by a quantum and drawing that time
 
-                    draw_process = new QLabel();
-                    draw_process->setText(tr("P %1").arg(Processes_Queue[k]->ID));
-                    draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
-                    draw_process->setGeometry(width_Prev,700,Processes_Queue[k]->quantum_time*25,50);
-                    //this->layout()->addWidget(draw_process);
-                    qDebug()<<Processes_Queue[k]->quantum_time*25;
-                    this->Scene->addWidget(draw_process);
-                    width_Prev+=Processes_Queue[k]->quantum_time*25;
 
-                    //decreasing remaining time by quantum
-                    Processes_Queue[k]->Remaining_Time -= Processes_Queue[k]->quantum_time;
+                        draw_process = new QLabel();
+                        draw_process->setText(tr("P %1").arg(Processes_Queue[k]->ID));
+                        draw_process->setStyleSheet("background-color:black;color:white; border-width: 1px; border-style:solid; border-color: white;");
+                        draw_process->setGeometry(width_Prev,700,diff*25,50);
+                        //this->layout()->addWidget(draw_process);
+                        qDebug()<<diff*25;
+                        this->Scene->addWidget(draw_process);
+                        width_Prev+=diff*25;
+
+                        //decreasing remaining time by quantum
+                        Processes_Queue[k]->Remaining_Time -= diff;
+                    }
+
+                    else
+                    {
+                        //increasing time by a quantum and drawing that time
+                        time+=Processes_Queue[k]->quantum_time;
+
+                        draw_process = new QLabel();
+                        draw_process->setText(tr("P %1").arg(Processes_Queue[k]->ID));
+                        draw_process->setStyleSheet("background-color:black;color:white; border-width: 1px; border-style:solid; border-color: white;");
+                        draw_process->setGeometry(width_Prev,700,Processes_Queue[k]->quantum_time*25,50);
+                        //this->layout()->addWidget(draw_process);
+                        qDebug()<<Processes_Queue[k]->quantum_time*25;
+                        this->Scene->addWidget(draw_process);
+                        width_Prev+=Processes_Queue[k]->quantum_time*25;
+
+                        //decreasing remaining time by quantum
+                        Processes_Queue[k]->Remaining_Time -= Processes_Queue[k]->quantum_time;
+                    }
+
+
+
+                    if(time < Processes_Queue[k+1]->Arrival_Time)
+                    {
+                       // int q=Processes_Queue[k+1]->Arrival_Time;
+                       // int y=(Processes_Queue[k]->Arrival_Time + Processes_Queue[k]->Burst_Time);
+                        gap=Processes_Queue[k+1]->Arrival_Time - time;
+                        time+=gap;
+
+                        draw_process = new QLabel();
+                        draw_process->setText("GAP");
+                        draw_process->setStyleSheet("background-color:white;color:black; border-width: 1px; border-style:solid; border-color: black;");
+                        draw_process->setGeometry(width_Prev,700,gap*25,50);
+                        //this->layout()->addWidget(draw_process);
+                        qDebug()<<"GAP: "<<gap*25;
+                        this->Scene->addWidget(draw_process);
+                        width_Prev+=gap*25;
+                    }
+
+
                 }
 
-                else
+
+
+             }
+
+            //here we handle the case of remaining time =quantum
+            //or remaining time = 0 and there is still time to the next process and gap is drawn
+             else
                 {
-                    time += Processes_Queue[k]->Remaining_Time;
+                    if(Processes_Queue[k]->Remaining_Time>0)
+                    {
+                        time += Processes_Queue[k]->Remaining_Time;
 
-                    //drawing the remaining time
-                    draw_process = new QLabel();
-                    draw_process->setText(tr("P %1").arg(Processes_Queue[k]->ID));
-                    draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
-                    draw_process->setGeometry(width_Prev,700,Processes_Queue[k]->Remaining_Time*25,50);
-                    //this->layout()->addWidget(draw_process);
-                    qDebug()<<Processes_Queue[k]->Remaining_Time*25;
-                    this->Scene->addWidget(draw_process);
-                    width_Prev+=Processes_Queue[k]->Remaining_Time*25;
-
-                    //waiting time will be burst time subtracted from current time
-                    Processes_Queue[k]->Waiting_Time = time - Processes_Queue[k]->Burst_Time;
+                        //drawing the remaining time
+                        draw_process = new QLabel();
+                        draw_process->setText(tr("P %1").arg(Processes_Queue[k]->ID));
+                        draw_process->setStyleSheet("background-color:black;color:white; border-width: 1px; border-style:solid; border-color: white;");
+                        draw_process->setGeometry(width_Prev,700,Processes_Queue[k]->Remaining_Time*25,50);
+                        //this->layout()->addWidget(draw_process);
+                        qDebug()<<Processes_Queue[k]->Remaining_Time*25;
+                        this->Scene->addWidget(draw_process);
+                        width_Prev+=Processes_Queue[k]->Remaining_Time*25;
 
 
-                    //making remaining time = 0 to indicate process is done
-                    Processes_Queue[k]->Remaining_Time=0;
+                        //waiting time will be burst time subtracted from current time
+                        Processes_Queue[k]->Waiting_Time = time - Processes_Queue[k]->Burst_Time;
+
+
+                        //making remaining time = 0 to indicate process is done
+                        Processes_Queue[k]->Remaining_Time=0;
+                    }
+
+
+
                 }
             }
-        }
 
+
+        first_time=0;
         if(vector_done == true)
             break;
     }
