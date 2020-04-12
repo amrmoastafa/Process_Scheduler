@@ -446,9 +446,9 @@ void MainWindow::SJF_NONP_Alg(){
                     draw_process = new QLabel();
                     draw_process->setText(tr("P %1").arg(ready_processes[0]->ID));
                     draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
-                    draw_process->setGeometry(width_Prev,700,ready_processes[0]->Burst_Time*50,50);
+                    draw_process->setGeometry(width_Prev,700,ready_processes[0]->Burst_Time*60,70);
                     draw_time = new QLabel();
-                    draw_time->setStyleSheet("color:black; background-color:rgb(124,124,124);");
+                    draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
                     draw_time->setText(tr(" %1").arg(time));
                     draw_time->setGeometry(width_Prev,750,50,50);
                     this->Scene->addWidget(draw_time);
@@ -457,7 +457,7 @@ void MainWindow::SJF_NONP_Alg(){
                     //                            THIS IS THE PART OF THE DRAWRING SCENE
                      //       Scene->addWidget(draw_process);
 
-                    width_Prev=width_Prev + ready_processes[0]->Burst_Time*50;
+                    width_Prev=width_Prev + ready_processes[0]->Burst_Time*60;
                     time= time + ready_processes[0]->Burst_Time;
                     for(int x=0;x<Processes_Queue.size();x++){
                         if(Processes_Queue[x]->ID == ready_processes[0]->ID){
@@ -472,18 +472,18 @@ void MainWindow::SJF_NONP_Alg(){
                     draw_process = new QLabel();
                     draw_process->setText("GAP");
                     draw_process->setStyleSheet("background-color:white;color:black; border-width: 2px; border-style: solid; border-color: gray;");
-                    draw_process->setGeometry(width_Prev ,700,1*50,50);
+                    draw_process->setGeometry(width_Prev ,700,1*60,70);
                     //this->layout()->addWidget(draw_process);
                     draw_time = new QLabel();
-                    draw_time->setStyleSheet("color:black; background-color:rgb(124,124,124);");
+                    draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
                     draw_time->setText(tr(" %1").arg( time));
-                    draw_time->setGeometry(width_Prev,750,50,50);
+                    draw_time->setGeometry(width_Prev,750,60,50);
                     this->Scene->addWidget(draw_time);
                     this->Scene->addWidget(draw_process);
 
 //                            THIS IS THE PART OF THE DRAWRING SCENE
 //                            Scene->addWidget(draw_process);
-                    width_Prev=width_Prev + 1*50;
+                    width_Prev=width_Prev + 1*60;
 
                     time = time + 1;
                 }
@@ -504,18 +504,18 @@ void MainWindow::SJF_NONP_Alg(){
                             draw_process = new QLabel();
                             draw_process->setText(tr("P %1").arg(ready_processes[j]->ID));
                             draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
-                            draw_process->setGeometry(width_Prev ,700,ready_processes[j]->Burst_Time*50,50);
+                            draw_process->setGeometry(width_Prev ,700,ready_processes[j]->Burst_Time*60,70);
                             //this->layout()->addWidget(draw_process);
                             draw_time = new QLabel();
-                            draw_time->setStyleSheet("color:black; background-color:rgb(124,124,124);");
+                            draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
                             draw_time->setText(tr(" %1").arg(time));
-                            draw_time->setGeometry(width_Prev,750,50,50);
+                            draw_time->setGeometry(width_Prev,750,60,50);
                             this->Scene->addWidget(draw_time);
                             this->Scene->addWidget(draw_process);
 
 //                            THIS IS THE PART OF THE DRAWRING SCENE
 //                            Scene->addWidget(draw_process);
-                            width_Prev=width_Prev + ready_processes[j]->Burst_Time*50;
+                            width_Prev=width_Prev + ready_processes[j]->Burst_Time*60;
 
                             time = time + ready_processes[j]->Burst_Time;
                             for(int x=0;x<Processes_Queue.size();x++){
@@ -530,108 +530,175 @@ void MainWindow::SJF_NONP_Alg(){
                     }
                 }
         }
+        draw_time = new QLabel();
+        draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
+        draw_time->setText(tr(" %1").arg(time));
+        draw_time->setGeometry(width_Prev,750,60,50);
+        this->Scene->addWidget(draw_time);
 }
 
 void MainWindow::SJF_P_Alg(){
-    qDebug()<<"Preemptive";
-view->setAlignment(Qt::AlignLeft);
-    //intializing remaining time = burst time
-    for(int i=0; i<Processes_Queue.size(); i++){
-        Processes_Queue[i]->Remaining_Time=Processes_Queue[i]->Burst_Time;
-    }
-
-
-    /*sorting according to arrival time*/
+    view->setAlignment(Qt::AlignLeft);
+        //intializing remaining time = burst time
         for(int i=0; i<Processes_Queue.size(); i++){
-            for(int j=0; j<Processes_Queue.size(); j++){
-                if(Processes_Queue[j]->Arrival_Time >  Processes_Queue[i]->Arrival_Time){
-                    Process *temp=Processes_Queue[j];
-                    Processes_Queue[j]=Processes_Queue[i];
-                    Processes_Queue[i]= temp;
+            Processes_Queue[i]->Remaining_Time=Processes_Queue[i]->Burst_Time;
+        }
+
+
+        /*sorting according to arrival time*/
+            for(int i=0; i<Processes_Queue.size(); i++){
+                for(int j=0; j<Processes_Queue.size(); j++){
+                    if(Processes_Queue[j]->Arrival_Time >  Processes_Queue[i]->Arrival_Time){
+                        Process *temp=Processes_Queue[j];
+                        Processes_Queue[j]=Processes_Queue[i];
+                        Processes_Queue[i]= temp;
+                    }
                 }
             }
-        }
 
-       // int time =Processes_Queue[0]->Arrival_Time;
-        int width_Prev=0;
+            QVector <Process *> arrive;
+            for(int i=0;i<Processes_Queue.size();i++){
+                arrive.push_back(Processes_Queue[i]);
+            }
 
+            QVector <Process *> DrawingSJFP;
+           // int time =Processes_Queue[0]->Arrival_Time;
+            int width_Prev=0;
+            int time=0;
+            int arrive_index=1;
+            while(Processes_Queue.size()!=0){
+                QVector<Process *> ready_processes;
+                for(int i=0; i<Processes_Queue.size();i++){
+                    /**check the ready processes**/
+                    if(Processes_Queue[i]->Arrival_Time<=time){
+                        ready_processes.push_back(Processes_Queue[i]);
+                    }
+                 }
 
-        for(int time =0; Processes_Queue.size()!=0; time++ ){
-            QVector<Process *> ready_processes;
-            for(int i=0; i<Processes_Queue.size();i++){
-                /**check the ready processes**/
-                if(Processes_Queue[i]->Arrival_Time<=time){
-
-                    ready_processes.push_back(Processes_Queue[i]);
-                }
-             }
-
-                // If only one process is ready draw it
-                if(ready_processes.size() == 1){
-                    //draw
-                    qDebug()<<ready_processes[0]->ID;
-                    draw_process = new QLabel();
-                    draw_process->setText(tr("P %1").arg(ready_processes[0]->ID));
-                    draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
-                    draw_process->setGeometry(width_Prev,700,50,50);
-                    this->Scene->addWidget(draw_process);
-                    width_Prev=width_Prev + 1*50;
-
-                    for(int x=0;x<Processes_Queue.size();x++){
-                        if(Processes_Queue[x]->ID == ready_processes[0]->ID){
-                           Processes_Queue[x]->Remaining_Time --;
-                           if(Processes_Queue[x]->Remaining_Time == 0){
-                               Processes_Queue.erase(Processes_Queue.begin()+x);
-                           }
-                           break;
+                    // If only one process is ready draw it
+                    if(ready_processes.size() == 1){
+                        //draw
+                       // qDebug()<<ready_processes[0]->ID;
+                          int start_index=time;
+                        if(arrive_index<arrive.size()){
+                            if(time+ready_processes[0]->Remaining_Time < arrive[arrive_index]->Arrival_Time) time = time + ready_processes[0]->Remaining_Time;
+                            else time=arrive[arrive_index]->Arrival_Time;
+                            arrive_index++;
                         }
-                     }
+                        else{
+                            time = time + ready_processes[0]->Remaining_Time;
+                        }
 
 
-                }
-                else if (ready_processes.size()==0){
-                    draw_process = new QLabel();
-                    draw_process->setText("GAP");
-                    draw_process->setStyleSheet("background-color:white;color:black;");
-                    draw_process->setGeometry(width_Prev ,700,50,50);
-                    this->Scene->addWidget(draw_process);
-                    width_Prev=width_Prev + 1*50;
-                }
 
-                /**if more than 1 process is ready compare their remaining time**/
-                else{
-                    int min_remaining_time= ready_processes[0]->Burst_Time;
-                    for(int j=0; j<ready_processes.size();j++){
-                       if(ready_processes[j]->Remaining_Time < min_remaining_time) min_remaining_time=ready_processes[j]->Remaining_Time;
+                        draw_process = new QLabel();
+                        draw_process->setText(tr("P %1").arg(ready_processes[0]->ID));
+                        draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
+                        draw_process->setGeometry(width_Prev,700,(time-start_index)*60,70);
+                        this->Scene->addWidget(draw_process);
+                        draw_time = new QLabel();
+                        draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
+                        draw_time->setText(tr(" %1").arg(start_index));
+                        draw_time->setGeometry(width_Prev,780,60,30);
+                        this->Scene->addWidget(draw_time);
+                        width_Prev=width_Prev + (time-start_index)*60;
+
+                       // DrawingSJFP.push_back(ready_processes[0]);
+                        for(int x=0;x<Processes_Queue.size();x++){
+                            if(Processes_Queue[x]->ID == ready_processes[0]->ID){
+                               Processes_Queue[x]->Remaining_Time =Processes_Queue[x]->Remaining_Time- (time-start_index);
+                               if(Processes_Queue[x]->Remaining_Time == 0){
+                                   Processes_Queue.erase(Processes_Queue.begin()+x);
+                               }
+                               break;
+                            }
+                         }
+
+
+                    }
+                    else if (ready_processes.size()==0){
+
+                        int start_index=time;
+                        time=arrive[arrive_index-1]->Arrival_Time;
+                         //arrive_index++;
+                         draw_process = new QLabel();
+                         draw_process->setText("GAP");
+                         draw_process->setStyleSheet("background-color:white;color:black;");
+                         draw_process->setGeometry(width_Prev ,700,(time-start_index)*60,70);
+                         this->Scene->addWidget(draw_process);
+                         draw_time = new QLabel();
+                         draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
+                         draw_time->setText(tr(" %1").arg(start_index));
+                         draw_time->setGeometry(width_Prev,780,60,30);
+                         this->Scene->addWidget(draw_time);
+                         width_Prev=width_Prev + (time-start_index)*60;
+                         Process *gap = new Process();
+                         gap->ID=-1;
+                         DrawingSJFP.push_back(gap);
                     }
 
-                    for(int j=0; j<ready_processes.size();j++){
-                        //el min burst ersmha we ems7ha mn el Queue
-                        if(ready_processes[j]->Remaining_Time == min_remaining_time){
-                            qDebug()<<ready_processes[j]->ID;
+                    /**if more than 1 process is ready compare their remaining time**/
+                    else{
+                        int min_remaining_time= ready_processes[0]->Burst_Time;
+                        for(int j=0; j<ready_processes.size();j++){
+                           if(ready_processes[j]->Remaining_Time < min_remaining_time) min_remaining_time=ready_processes[j]->Remaining_Time;
+                        }
 
-                            //Draw
-                            draw_process = new QLabel();
-                            draw_process->setText(tr("P %1").arg(ready_processes[j]->ID));
-                            draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
-                            draw_process->setGeometry(width_Prev,700,50,50);
-                            this->Scene->addWidget(draw_process);
-                            width_Prev=width_Prev + 1*50;
+                        for(int j=0; j<ready_processes.size();j++){
+                            //el min burst ersmha we ems7ha mn el Queue
+                            if(ready_processes[j]->Remaining_Time == min_remaining_time){
+                                //qDebug()<<ready_processes[j]->ID;
 
+                               int start_index=time;
 
-                            for(int x=0;x<Processes_Queue.size();x++){
-                                if(Processes_Queue[x]->ID == ready_processes[j]->ID){
-                                    Processes_Queue[x]->Remaining_Time --;
-                                    if(Processes_Queue[x]->Remaining_Time == 0) Processes_Queue.erase(Processes_Queue.begin()+x);
-                                   break;
+                                if(arrive_index < arrive.size()){
+                                    if(time+ready_processes[j]->Remaining_Time < arrive[arrive_index]->Arrival_Time){
+                                        qDebug()<<"fel if";
+                                        time = time + ready_processes[j]->Remaining_Time;
+                                    }
+                                    else {
+                                        time=arrive[arrive_index]->Arrival_Time;
+                                        arrive_index++;
+                                    }
+
                                 }
-                             }
-                            break;
-                        }
+                                else{
+                                    time = time + ready_processes[j]->Remaining_Time;
+                                }
+                                //Draw
+                                draw_process = new QLabel();
+                                draw_process->setText(tr("P %1").arg(ready_processes[j]->ID));
+                                draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
+                                draw_process->setGeometry(width_Prev,700,(time-start_index)*60,70);
+                                this->Scene->addWidget(draw_process);
+                                draw_time = new QLabel();
+                                draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
+                                draw_time->setText(tr(" %1").arg(start_index));
+                                draw_time->setGeometry(width_Prev,780,60,30);
+                                this->Scene->addWidget(draw_time);
+                                width_Prev=width_Prev + (time-start_index)*60;
 
+                                qDebug()<<time;
+                                //DrawingSJFP.push_back(ready_processes[j]);
+                                for(int x=0;x<Processes_Queue.size();x++){
+                                    if(Processes_Queue[x]->ID == ready_processes[j]->ID){
+                                        Processes_Queue[x]->Remaining_Time =Processes_Queue[x]->Remaining_Time- (time-start_index);
+                                        if(Processes_Queue[x]->Remaining_Time == 0) Processes_Queue.erase(Processes_Queue.begin()+x);
+                                       break;
+                                    }
+                                 }
+                                break;
+                            }
+
+                        }
                     }
-                }
-        }
+            }
+
+            draw_time = new QLabel();
+            draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
+            draw_time->setText(tr(" %1").arg(time));
+            draw_time->setGeometry(width_Prev,780,60,30);
+            this->Scene->addWidget(draw_time);
 
 }
 
