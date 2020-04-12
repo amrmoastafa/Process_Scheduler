@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     Scene->setBackgroundBrush(Qt::darkGray);
     view = new  QGraphicsView(Scene,this);
     view->setGeometry(300,0,1500,1000);
-
+    view->setAlignment(Qt::AlignLeft);
 
     scene_toolbar= new QGraphicsScene();
     view_toolbar= new QGraphicsView(scene_toolbar,this);
@@ -147,6 +147,7 @@ void MainWindow::Get_Text()
     if(Alg_chosen == "SJF" && Preemptive_Checkbox->isChecked() ) SJF_P_Alg();
     else if (Alg_chosen == "SJF" && !Preemptive_Checkbox->isChecked()) SJF_NONP_Alg();
     else if (Alg_chosen == "FCFS") FCFS_Alg();
+    else if(Alg_chosen == "Priority") Priority_Alg();
     else if (Alg_chosen == "Round Robin")
     {
         /*Initializing quantum time*/
@@ -389,8 +390,8 @@ int MainWindow::PRIORITY_layout(){
         Processes_Queue[i]->Process_name = ID_Process->text();
         ID_Process->setGeometry(20,300+height,30,30);
         ID_Process->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
-        arrival_input->setGeometry(60,300+height,40,30);
-        burst_input->setGeometry(140,300+height,40,30);
+        arrival_input->setGeometry(60,300+height,60,30);
+        burst_input->setGeometry(140,300+height,60,30);
 
         this->scene_toolbar->addWidget(priority_input);
         this->scene_toolbar->addWidget(arrival_input);
@@ -717,6 +718,96 @@ void MainWindow::FCFS_Alg(){
         }
 }
 
+void MainWindow::Priority_Alg()
+{
+    /*sorting according to arrival time*/
+        for(int i=0; i<Processes_Queue.size(); i++){
+            for(int j=0; j<Processes_Queue.size(); j++){
+                if(Processes_Queue[j]->Arrival_Time >  Processes_Queue[i]->Arrival_Time){
+                    Process *temp=Processes_Queue[j];
+                    Processes_Queue[j]=Processes_Queue[i];
+                    Processes_Queue[i]= temp;
+                }
+                if((Processes_Queue[i]->Arrival_Time == Processes_Queue[j]->Arrival_Time) && (Processes_Queue[i]->Priority < Processes_Queue[j]->Priority))
+                {
+                    Process *temp=Processes_Queue[j];
+                    Processes_Queue[j]=Processes_Queue[i];
+                    Processes_Queue[i]= temp;
+                }
+            }
+        }
+        Temp = new DrawingQueue;
+        for(int i = 0; i<Processes_Queue.size(); i++) qDebug()<< Processes_Queue[i]->Process_name << " Arrived :" <<Processes_Queue[i]->Arrival_Time << Processes_Queue[i]->Priority;
+        int time = 0;
+        for(int i = 0; i < Processes_Queue.size();i++)
+        {
+
+            if( (Processes_Queue[i]->Arrival_Time) > time)
+            {
+
+                Temp->p_next = "Gap";Temp->p_width = ((Processes_Queue[i]->Arrival_Time) - time );Temp->time_start = time;
+                DrawingQueueFCFS.append(*Temp);
+                time = time + Temp->p_width;
+
+                Temp->p_next = Processes_Queue[i]->Process_name;
+                Temp->p_width = Processes_Queue[i]->Burst_Time;
+                Temp->time_start = time;
+                DrawingQueueFCFS.append(*Temp);
+                time = time + Temp->p_width;
+
+
+            }else if((Processes_Queue[i]->Arrival_Time) == time)
+            {
+
+                Temp->p_next = Processes_Queue[i]->Process_name;
+                Temp->p_width = Processes_Queue[i]->Burst_Time;
+                Temp->time_start = time;
+                time = time + Temp->p_width;
+                DrawingQueueFCFS.append(*Temp);
+
+            }
+            else if( (Processes_Queue[i]->Arrival_Time) < time)
+            {
+
+                Temp->p_next = Processes_Queue[i]->Process_name;
+                Temp->p_width = Processes_Queue[i]->Burst_Time;
+                Temp->time_start = time;
+                time = time + Temp->p_width;DrawingQueueFCFS.append(*Temp);
+
+            }
+        }
+        for(int i = 0; i<DrawingQueueFCFS.size(); i++) qDebug()<< DrawingQueueFCFS[i].p_next << " Arrived :" <<DrawingQueueFCFS[i].p_width;
+        time = 0;
+
+        for(int i = 0 ; i < DrawingQueueFCFS.size();i++)
+        {
+            Process_drawn = new QPushButton("Hello");
+            Process_drawn->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 10%;} "
+                                         "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
+
+
+
+            if(DrawingQueueFCFS[i].p_next == "Gap")
+            {
+
+                Process_drawn->setGeometry( time,0,(DrawingQueueFCFS[i].p_width*25),100);
+                Process_drawn->setText(DrawingQueueFCFS[i].p_next);
+                Process_drawn->setStyleSheet(" QPushButton{ background-color:white; color:black; font-size: 17px; font-family: Arial;border-radius: 10%;} "
+                                             "QPushButton:hover { background-color: black; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:white;} ");
+                Scene->addWidget(Process_drawn);
+                time += ((DrawingQueueFCFS[i].p_width*25));
+            }else
+            {
+                Process_drawn->setGeometry(time,0,(DrawingQueueFCFS[i].p_width*25),100);
+                Process_drawn->setText(DrawingQueueFCFS[i].p_next);
+                Process_drawn->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 10%;} "
+                                             "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
+                Scene->addWidget(Process_drawn);
+                time += ((DrawingQueueFCFS[i].p_width*25));
+            }
+        }
+}
+
 void MainWindow::RR_Alg()
 {
     /*sorting according to arrival time*/
@@ -837,6 +928,11 @@ void MainWindow::again(){
         deletechart->setStyleSheet("background-color:rgb(128,128,128);");
         Scene->addWidget(deletechart);
        // draw_process->deleteLater();
+    }
+    else
+    {
+        qApp->quit();
+        QProcess::startDetached(qApp->arguments()[0],qApp->arguments());
     }
 
 }

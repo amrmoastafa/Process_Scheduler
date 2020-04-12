@@ -17,7 +17,8 @@
 #include <QCheckBox>
 #include <QProcess>
 #include <QMessageBox>
-
+#include <QApplication>
+#include <QProcess>
 
 
 namespace Ui {
@@ -100,6 +101,7 @@ public:
     void SJF_P_Alg();
     void FCFS_Alg();
     void RR_Alg();
+    void Priority_Alg();
 
 
 private:
