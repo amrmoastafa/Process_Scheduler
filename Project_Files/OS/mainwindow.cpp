@@ -828,29 +828,45 @@ void MainWindow::FCFS_Alg(){
 void MainWindow::Priority_Alg()
 {
     /*sorting according to arrival time*/
+    for(int k = 0 ; k < Processes_Queue.size();k++)
+    {
         for(int i=0; i<Processes_Queue.size(); i++){
+
+
             for(int j=0; j<Processes_Queue.size(); j++){
+
                 if(Processes_Queue[j]->Arrival_Time >  Processes_Queue[i]->Arrival_Time){
                     Process *temp=Processes_Queue[j];
                     Processes_Queue[j]=Processes_Queue[i];
                     Processes_Queue[i]= temp;
-                }
-                if((Processes_Queue[i]->Arrival_Time == Processes_Queue[j]->Arrival_Time) && (Processes_Queue[i]->Priority < Processes_Queue[j]->Priority))
+
+                }else if((Processes_Queue[j]->Arrival_Time == Processes_Queue[i]->Arrival_Time))
                 {
-                    Process *temp=Processes_Queue[j];
-                    Processes_Queue[j]=Processes_Queue[i];
-                    Processes_Queue[i]= temp;
+                    if((Processes_Queue[i]->Priority < Processes_Queue[j]->Priority))
+                    {
+                        qDebug()<< "************ Swapped" <<Processes_Queue[i]->Process_name <<" With : "<<Processes_Queue[j]->Process_name;
+                        Processes_Queue[j]->Arrival_Time = Processes_Queue[i]->Arrival_Time + Processes_Queue[i]->Burst_Time;
+                        Process *temp=Processes_Queue[j];
+                        Processes_Queue[j]=Processes_Queue[i];
+                        Processes_Queue[i]= temp;
+                    }
+
                 }
+
             }
         }
+    }
+        int time = 0;
+
         Temp = new DrawingQueue;
         for(int i = 0; i<Processes_Queue.size(); i++) qDebug()<< Processes_Queue[i]->Process_name << " Arrived :" <<Processes_Queue[i]->Arrival_Time << Processes_Queue[i]->Priority;
-        int time = 0;
+        time = 0;
         for(int i = 0; i < Processes_Queue.size();i++)
         {
 
             if( (Processes_Queue[i]->Arrival_Time) > time)
             {
+
 
                 Temp->p_next = "Gap";Temp->p_width = ((Processes_Queue[i]->Arrival_Time) - time );Temp->time_start = time;
                 DrawingQueueFCFS.append(*Temp);
@@ -876,14 +892,17 @@ void MainWindow::Priority_Alg()
             else if( (Processes_Queue[i]->Arrival_Time) < time)
             {
 
+                qDebug()<< Processes_Queue[i]->Process_name << "Executed" <<Processes_Queue[i]->Arrival_Time;
+
                 Temp->p_next = Processes_Queue[i]->Process_name;
                 Temp->p_width = Processes_Queue[i]->Burst_Time;
                 Temp->time_start = time;
-                time = time + Temp->p_width;DrawingQueueFCFS.append(*Temp);
+                time = time + Temp->p_width;
+                DrawingQueueFCFS.append(*Temp);
 
             }
         }
-        for(int i = 0; i<DrawingQueueFCFS.size(); i++) qDebug()<< DrawingQueueFCFS[i].p_next << " Arrived :" <<DrawingQueueFCFS[i].p_width;
+//        for(int i = 0; i<DrawingQueueFCFS.size(); i++) qDebug()<< DrawingQueueFCFS[i].p_next << " Arrived :" <<DrawingQueueFCFS[i].p_width;
         time = 0;
 
         for(int i = 0 ; i < DrawingQueueFCFS.size();i++)
