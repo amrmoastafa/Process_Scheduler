@@ -424,6 +424,14 @@ void MainWindow::SJF_NONP_Alg(){
                 }
             }
         }
+        for(int i=0;i<Processes_Queue.size();i++){
+            Processes_Queue[i]->Waiting_Time=0;
+        }
+
+        QVector <Process *> arrive;
+        for(int i=0;i<Processes_Queue.size();i++){
+            arrive.push_back(Processes_Queue[i]);
+        }
 
         //int time =Processes_Queue[0]->Arrival_Time;
         int time=0;
@@ -458,6 +466,9 @@ void MainWindow::SJF_NONP_Alg(){
                      //       Scene->addWidget(draw_process);
 
                     width_Prev=width_Prev + ready_processes[0]->Burst_Time*60;
+                    for(int s=0;s<arrive.size();s++){
+                        if(ready_processes[0]->ID == arrive[s]->ID) arrive[s]->Waiting_Time=time-arrive[s]->Arrival_Time;
+                    }
                     time= time + ready_processes[0]->Burst_Time;
                     for(int x=0;x<Processes_Queue.size();x++){
                         if(Processes_Queue[x]->ID == ready_processes[0]->ID){
@@ -490,6 +501,8 @@ void MainWindow::SJF_NONP_Alg(){
 
                 /**if more than 1 process is ready compare their burst time**/
                 else{
+                    QVector<int>IDs;
+
                     int min_burst= ready_processes[0]->Burst_Time;
                     for(int j=0; j<ready_processes.size();j++){
                        if(ready_processes[j]->Burst_Time < min_burst) min_burst=ready_processes[j]->Burst_Time;
@@ -499,6 +512,9 @@ void MainWindow::SJF_NONP_Alg(){
                         //el min burst ersmha we ems7ha mn el Queue
                         if(ready_processes[j]->Burst_Time == min_burst){
                             qDebug()<<ready_processes[j]->ID;
+                            for(int s=0;s<arrive.size();s++){
+                                if(ready_processes[j]->ID == arrive[s]->ID) arrive[s]->Waiting_Time=time-arrive[s]->Arrival_Time;
+                            }
 
                             //Draw
                             draw_process = new QLabel();
@@ -524,10 +540,21 @@ void MainWindow::SJF_NONP_Alg(){
                                    break;
                                 }
                              }
-                            break;
+                            break; //hat3ml bug b3d kda
                         }
+                        else{
+                        IDs.push_back(ready_processes[j]->ID);
 
+                        }
                     }
+
+                    /*for(int q=0; q<arrive.size();q++){
+                        for(int w=0;w<IDs.size();w++){
+                            if(arrive[q]->ID==IDs[w]){
+                                arrive[q]->Waiting_Time=arrive[q]->Waiting_Time+min_burst;
+                            }
+                        }
+                    }*/
                 }
         }
         draw_time = new QLabel();
@@ -535,6 +562,19 @@ void MainWindow::SJF_NONP_Alg(){
         draw_time->setText(tr(" %1").arg(time));
         draw_time->setGeometry(width_Prev,750,60,50);
         this->Scene->addWidget(draw_time);
+        int sum=0;
+        for(int q=0;q<arrive.size();q++){
+            qDebug()<<arrive[q]->ID << "waiting time is"<<arrive[q]->Waiting_Time;
+            sum=sum+arrive[q]->Waiting_Time;
+        }
+        Avg_label= new QLabel();
+        float avg=sum/arrive.size();
+        qDebug()<<avg;
+        Avg_label->setStyleSheet("color:rgb(78,204,163); background-color:rgb(128,128,128);font-size: 40px;");
+        Avg_label->setText(tr("Average Waiting Time= %1").arg(avg));
+        Avg_label->setGeometry(500,50,700,70);
+        this->Scene->addWidget(Avg_label);
+
 }
 
 void MainWindow::SJF_P_Alg(){
@@ -963,7 +1003,7 @@ void MainWindow::RR_Alg()
 
 //this function is supposed to delete and start a new algorithm
 void MainWindow::again(){
-    Simulate->deleteLater();
+   /* Simulate->deleteLater();
     burst_time.clear();
     arrival_time.clear();
     if(Alg_chosen=="SJF") {
@@ -995,11 +1035,11 @@ void MainWindow::again(){
         deletechart->setStyleSheet("background-color:rgb(128,128,128);");
         Scene->addWidget(deletechart);
        // draw_process->deleteLater();
-    }
-    else
-    {
+    }*/
+
+
         qApp->quit();
         QProcess::startDetached(qApp->arguments()[0],qApp->arguments());
-    }
+
 
 }

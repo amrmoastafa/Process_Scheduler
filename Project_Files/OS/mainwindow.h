@@ -66,6 +66,7 @@ public:
     QLabel *arrival_label;
     QLabel *ID_Process;
     QLabel *Preemptive_label;
+    QLabel *Avg_label;
     QPushButton *Ok;
     QPushButton *restart;
     QPushButton *Simulate;
