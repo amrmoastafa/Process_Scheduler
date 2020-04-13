@@ -834,12 +834,12 @@ void MainWindow::SJF_P_Alg(){
             for(int q=0;q<arrive.size();q++){
                 sum=sum+(arrive[q]->Termination_Time-arrive[q]->Burst_Time-arrive[q]->Arrival_Time);
             }
-            Avg_label= new QLabel();
+
             float avg=sum/arrive.size();
             qDebug()<<avg;
-            Avg_label->setStyleSheet("color:rgb(78,204,163); background-color:rgb(128,128,128);font-size: 40px;");
+
             Avg_label->setText(tr("Average Waiting Time= %1").arg(avg));
-            Avg_label->setGeometry(500,50,700,70);
+
             this->Scene->addWidget(Avg_label);
 }
 
