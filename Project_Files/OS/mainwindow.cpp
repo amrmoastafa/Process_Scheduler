@@ -468,6 +468,7 @@ void MainWindow::SJF_NONP_Alg(){
         //int time =Processes_Queue[0]->Arrival_Time;
         float time=0;
         float width_Prev=0;
+        int arrive_index = 1;
 
         while(Processes_Queue.size() !=0){
             QVector<Process *> ready_processes;
@@ -518,6 +519,7 @@ void MainWindow::SJF_NONP_Alg(){
                     for(int s=0;s<arrive.size();s++){
                         if(ready_processes[0]->ID == arrive[s]->ID) arrive[s]->Waiting_Time=time-arrive[s]->Arrival_Time;
                     }
+                    arrive_index++;
                     time= time + ready_processes[0]->Burst_Time;
                     for(int x=0;x<Processes_Queue.size();x++){
                         if(Processes_Queue[x]->ID == ready_processes[0]->ID){
@@ -545,7 +547,7 @@ void MainWindow::SJF_NONP_Alg(){
 //                            Scene->addWidget(draw_process);
                     width_Prev=width_Prev + 1*60;
 
-                    time = time + 1;
+                    time=arrive[arrive_index-1]->Arrival_Time;
                 }
 
                 /**if more than 1 process is ready compare their burst time**/
@@ -598,6 +600,7 @@ void MainWindow::SJF_NONP_Alg(){
 //                            THIS IS THE PART OF THE DRAWRING SCENE
 //                            Scene->addWidget(draw_process);
                             width_Prev=width_Prev + ready_processes[j]->Burst_Time*60;
+                            arrive_index++;
 
                             time = time + ready_processes[j]->Burst_Time;
                             for(int x=0;x<Processes_Queue.size();x++){
