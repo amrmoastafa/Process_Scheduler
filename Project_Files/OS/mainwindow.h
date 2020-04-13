@@ -27,8 +27,8 @@ class MainWindow;
 class Process
 {
 public:
-    float Arrival_Time, Burst_Time, Remaining_Time, Termination_Time;
-    int Priority,ID,quantum_time;
+    float Arrival_Time, Burst_Time, Remaining_Time, Termination_Time,quantum_time,old_finish_time;
+    int Priority,ID;
     float TurnAround_Time = Termination_Time - Arrival_Time;
     float Waiting_Time = TurnAround_Time - Burst_Time;
     QString Process_name;
