@@ -1883,8 +1883,8 @@ void MainWindow::RR_Alg()
     {
         avg_waiting_time+=Processes_Queue[l]->Waiting_Time;
     }
-
-
+    int n=Processes_Queue.size();
+    tot_avg_waiting_time=avg_waiting_time/(float)n;
     Avg_label->setText(tr("Average Waiting Time= %1").arg(abs(tot_avg_waiting_time)));
     this->Scene->addWidget(Avg_label);
 
