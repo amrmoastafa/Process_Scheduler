@@ -595,6 +595,10 @@ void MainWindow::SJF_P_Alg(){
                     }
                 }
             }
+            for(int i=0;i<Processes_Queue.size();i++){
+                Processes_Queue[i]->Waiting_Time=0;
+                Processes_Queue[i]->Termination_Time=0;
+            }
 
             QVector <Process *> arrive;
             for(int i=0;i<Processes_Queue.size();i++){
@@ -603,9 +607,10 @@ void MainWindow::SJF_P_Alg(){
 
             QVector <Process *> DrawingSJFP;
            // int time =Processes_Queue[0]->Arrival_Time;
-            int width_Prev=0;
-            int time=0;
+            float width_Prev=0;
+            float time=0;
             int arrive_index=1;
+            int flag=-1;
             while(Processes_Queue.size()!=0){
                 QVector<Process *> ready_processes;
                 for(int i=0; i<Processes_Queue.size();i++){
@@ -617,12 +622,34 @@ void MainWindow::SJF_P_Alg(){
 
                     // If only one process is ready draw it
                     if(ready_processes.size() == 1){
-                        //draw
                        // qDebug()<<ready_processes[0]->ID;
-                          int start_index=time;
+
+                        if (flag !=ready_processes[0]->ID){
+                            //get waiting time
+                            for(int s=0;s<arrive.size();s++){
+                                if(ready_processes[0]->ID == arrive[s]->ID) {
+                                    if(arrive[s]->Remaining_Time != arrive[s]->Burst_Time){
+                                        arrive[s]->Waiting_Time=arrive[s]->Waiting_Time + (time-arrive[s]->Termination_Time);
+                                    }
+                                    else {
+                                        arrive[s]->Waiting_Time=arrive[s]->Waiting_Time + time-arrive[s]->Arrival_Time;
+                                    }
+
+                                }
+                            }
+                        }
+
+                        float start_index=time;
+
+                        //adjust time
                         if(arrive_index<arrive.size()){
-                            if(time+ready_processes[0]->Remaining_Time < arrive[arrive_index]->Arrival_Time) time = time + ready_processes[0]->Remaining_Time;
-                            else time=arrive[arrive_index]->Arrival_Time;
+                            if(time+ready_processes[0]->Remaining_Time < arrive[arrive_index]->Arrival_Time){
+                                time = time + ready_processes[0]->Remaining_Time;
+                            }
+                            else{
+                                time=arrive[arrive_index]->Arrival_Time;
+                                flag=ready_processes[0]->ID;
+                            }
                             arrive_index++;
                         }
                         else{
@@ -630,6 +657,11 @@ void MainWindow::SJF_P_Alg(){
                         }
 
 
+                        for(int s=0;s<arrive.size();s++){
+                            if(ready_processes[0]->ID == arrive[s]->ID) {
+                                arrive[s]->Termination_Time=time;
+                            }
+                        }
 
                         draw_process = new QLabel();
                         draw_process->setText(tr("P %1").arg(ready_processes[0]->ID));
@@ -653,12 +685,11 @@ void MainWindow::SJF_P_Alg(){
                                break;
                             }
                          }
-
-
                     }
+
                     else if (ready_processes.size()==0){
 
-                        int start_index=time;
+                        float start_index=time;
                         time=arrive[arrive_index-1]->Arrival_Time;
                          //arrive_index++;
                          draw_process = new QLabel();
@@ -679,7 +710,7 @@ void MainWindow::SJF_P_Alg(){
 
                     /**if more than 1 process is ready compare their remaining time**/
                     else{
-                        int min_remaining_time= ready_processes[0]->Burst_Time;
+                        float min_remaining_time= ready_processes[0]->Burst_Time;
                         for(int j=0; j<ready_processes.size();j++){
                            if(ready_processes[j]->Remaining_Time < min_remaining_time) min_remaining_time=ready_processes[j]->Remaining_Time;
                         }
@@ -689,21 +720,48 @@ void MainWindow::SJF_P_Alg(){
                             if(ready_processes[j]->Remaining_Time == min_remaining_time){
                                 //qDebug()<<ready_processes[j]->ID;
 
-                               int start_index=time;
+                                //calc avg
+                                if(flag!=ready_processes[j]->ID){
+                                    for(int s=0;s<arrive.size();s++){
+                                        if(ready_processes[j]->ID == arrive[s]->ID){
+                                            if(arrive[s]->Remaining_Time != arrive[s]->Burst_Time){
+                                                arrive[s]->Waiting_Time=arrive[s]->Waiting_Time + (time-arrive[s]->Termination_Time);
+                                            }
+                                            else {
+                                                arrive[s]->Waiting_Time=arrive[s]->Waiting_Time + time-arrive[s]->Arrival_Time;
+                                            }
 
+                                        }
+
+                                    }
+
+                                }
+
+                                //set waiting time
+
+                               float start_index=time;
+                                //adjust time
                                 if(arrive_index < arrive.size()){
                                     if(time+ready_processes[j]->Remaining_Time < arrive[arrive_index]->Arrival_Time){
-                                        qDebug()<<"fel if";
+
                                         time = time + ready_processes[j]->Remaining_Time;
                                     }
                                     else {
                                         time=arrive[arrive_index]->Arrival_Time;
+                                        flag = ready_processes[j]->ID;
                                         arrive_index++;
                                     }
 
                                 }
                                 else{
                                     time = time + ready_processes[j]->Remaining_Time;
+                                    flag = ready_processes[j]->ID;
+                                }
+
+                                for(int s=0;s<arrive.size();s++){
+                                    if(ready_processes[j]->ID == arrive[s]->ID) {
+                                        arrive[s]->Termination_Time=time;
+                                    }
                                 }
                                 //Draw
                                 draw_process = new QLabel();
@@ -733,13 +791,24 @@ void MainWindow::SJF_P_Alg(){
                         }
                     }
             }
-
+qDebug()<<"tessst";
             draw_time = new QLabel();
             draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
             draw_time->setText(tr(" %1").arg(time));
             draw_time->setGeometry(width_Prev,780,60,30);
             this->Scene->addWidget(draw_time);
-
+            float sum=0;
+            for(int q=0;q<arrive.size();q++){
+                qDebug()<<arrive[q]->ID << "waiting time is"<<arrive[q]->Waiting_Time;
+                sum=sum+arrive[q]->Waiting_Time;
+            }
+            Avg_label= new QLabel();
+            float avg=sum/arrive.size();
+            qDebug()<<avg;
+            Avg_label->setStyleSheet("color:rgb(78,204,163); background-color:rgb(128,128,128);font-size: 40px;");
+            Avg_label->setText(tr("Average Waiting Time= %1").arg(avg));
+            Avg_label->setGeometry(500,50,700,70);
+            this->Scene->addWidget(Avg_label);
 }
 
 void MainWindow::FCFS_Alg(){
