@@ -53,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     Ok = new QPushButton("OK");
-    Ok->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius:50%; border-width:1px;border-style: solid; border-color:white;} "
+    Ok->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius:50%; border-width:0.2px;border-style: solid; border-color:white;} "
                       "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
     Ok->setGeometry(60,180,210,40);
     this->scene_toolbar->addWidget(Ok);
@@ -791,16 +791,16 @@ void MainWindow::SJF_P_Alg(){
                         }
                     }
             }
-qDebug()<<"tessst";
+
             draw_time = new QLabel();
             draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
             draw_time->setText(tr(" %1").arg(time));
             draw_time->setGeometry(width_Prev,780,60,30);
             this->Scene->addWidget(draw_time);
+
             float sum=0;
             for(int q=0;q<arrive.size();q++){
-                qDebug()<<arrive[q]->ID << "waiting time is"<<arrive[q]->Waiting_Time;
-                sum=sum+arrive[q]->Waiting_Time;
+                sum=sum+(arrive[q]->Termination_Time-arrive[q]->Burst_Time-arrive[q]->Arrival_Time);
             }
             Avg_label= new QLabel();
             float avg=sum/arrive.size();
