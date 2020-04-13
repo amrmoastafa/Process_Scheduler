@@ -1437,7 +1437,7 @@ void MainWindow::Priority_AlgP()
         //{
            // Process_drawn = new QPushButton();
             //Process_drawn->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 10%;} "
-                                         "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
+                                       //  "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
 
 
 
@@ -1447,7 +1447,7 @@ void MainWindow::Priority_AlgP()
                // Process_drawn->setGeometry( time,0,(DrawingQueueFCFS[i].p_width*25),100);
                 //Process_drawn->setText(DrawingQueueFCFS[i].p_next);
                 //Process_drawn->setStyleSheet(" QPushButton{ background-color:white; color:black; font-size: 17px; font-family: Arial;border-radius: 10%;} "
-                                             "QPushButton:hover { background-color: black; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:white;} ");
+                                             //"QPushButton:hover { background-color: black; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:white;} ");
                 //Scene->addWidget(Process_drawn);
                 //time += ((DrawingQueueFCFS[i].p_width*25));
             //}else
@@ -1455,7 +1455,7 @@ void MainWindow::Priority_AlgP()
                // Process_drawn->setGeometry(time,0,(DrawingQueueFCFS[i].p_width*25),100);
                 //Process_drawn->setText(DrawingQueueFCFS[i].p_next);
                 //Process_drawn->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 10%;} "
-                                             "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
+                                    //         "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
                 //Scene->addWidget(Process_drawn);
                 //time += ((DrawingQueueFCFS[i].p_width*25));
             //}
