@@ -85,7 +85,7 @@ void MainWindow:: get_param(){
 
     if(num_process_chosen.split(" ")[0].toInt() == 0){
         msg_box = new QMessageBox();
-        msg_box->setText("Please Enter Number of process :( ");
+        msg_box->setText("Please Enter Number Of Processes :( ");
         msg_box->exec();
     }
     else{
@@ -121,53 +121,65 @@ void MainWindow::Get_Text()
     //We can use qDebug() Function to view variables as follows:
     //qDebug()<<"This is the value of first element of burst time vector : " <<burst_time[0]->text();
     //End
-
+    int check_flag=1;
     for(int j = 0; j<burst_time.size(); j++)
     {
-        Processes_Queue[j]->Arrival_Time = (arrival_time[j]->text().toFloat());
+        if((arrival_time[j]->text().at(0) >=97 && arrival_time[j]->text().at(0)<=122)  || (burst_time[j]->text().at(0)>=97 && burst_time[j]->text().at(0) <=122)){
+            msg_box = new QMessageBox();
+            msg_box->setText("This is not a valid number!");
+            msg_box->exec();
+            check_flag=0;
+            break;
+        }
+        else{
+            Processes_Queue[j]->Arrival_Time = (arrival_time[j]->text().toFloat());
 
-        qDebug() <<"Process : " <<Processes_Queue[j]->Process_name<<" Arrival Time is : "<<Processes_Queue[j]->Arrival_Time;
+            qDebug() <<"Process : " <<Processes_Queue[j]->Process_name<<" Arrival Time is : "<<Processes_Queue[j]->Arrival_Time;
 
-        Processes_Queue[j]->Burst_Time = (burst_time[j]->text().toFloat());//getting the text written (burst time of process j) from line edit of j
-        Processes_Queue[j]->ID =j;
+            Processes_Queue[j]->Burst_Time = (burst_time[j]->text().toFloat());//getting the text written (burst time of process j) from line edit of j
+            Processes_Queue[j]->ID =j;
 
-        qDebug() <<"Process : " <<Processes_Queue[j]->Process_name<<" Burst Time is : "<<Processes_Queue[j]->Burst_Time;
-        if(Algorithm_dropdown->currentText() == "Priority")
-        {
-            //Processes_Queue[j]->Priority = ((priority_vect[j]->currentIndex())+1);
-            Processes_Queue[j]->Priority=Priority_t[j]->text().toInt();
+            qDebug() <<"Process : " <<Processes_Queue[j]->Process_name<<" Burst Time is : "<<Processes_Queue[j]->Burst_Time;
+            if(Algorithm_dropdown->currentText() == "Priority")
+            {
+                //Processes_Queue[j]->Priority = ((priority_vect[j]->currentIndex())+1);
+                Processes_Queue[j]->Priority=Priority_t[j]->text().toInt();
 
-            qDebug() <<"Process : " <<Processes_Queue[j]->Process_name<<" Priority is : "<<Processes_Queue[j]->Priority;
+                qDebug() <<"Process : " <<Processes_Queue[j]->Process_name<<" Priority is : "<<Processes_Queue[j]->Priority;
 
+            }
         }
 
 
     }
 
-   /****choose the Algorithm to be executed****/
-    if(Alg_chosen == "SJF" && Preemptive_Checkbox->isChecked() ) SJF_P_Alg();
-    else if (Alg_chosen == "SJF" && !Preemptive_Checkbox->isChecked()) SJF_NONP_Alg();
-    else if (Alg_chosen == "FCFS") FCFS_Alg();
-    else if(Alg_chosen == "Priority")
-    {
+    if(check_flag){
+        /****choose the Algorithm to be executed****/
+         if(Alg_chosen == "SJF" && Preemptive_Checkbox->isChecked() ) SJF_P_Alg();
+         else if (Alg_chosen == "SJF" && !Preemptive_Checkbox->isChecked()) SJF_NONP_Alg();
+         else if (Alg_chosen == "FCFS") FCFS_Alg();
+         else if(Alg_chosen == "Priority")
+         {
 
-        if(Preemptive_Checkbox->isChecked())
-        {
-            Priority_AlgP();
-        }else
-        {
-            Priority_AlgNP();
-        }
+             if(Preemptive_Checkbox->isChecked())
+             {
+                 Priority_AlgP();
+             }else
+             {
+                 Priority_AlgNP();
+             }
+         }
+         else if (Alg_chosen == "Round Robin")
+         {
+             /*Initializing quantum time*/
+             for(int l=0; l<Processes_Queue.size();l++)
+             {
+                 Processes_Queue[l]->quantum_time=time_quantum_input->text().toFloat();
+             }
+             RR_Alg();
+         }
     }
-    else if (Alg_chosen == "Round Robin")
-    {
-        /*Initializing quantum time*/
-        for(int l=0; l<Processes_Queue.size();l++)
-        {
-            Processes_Queue[l]->quantum_time=time_quantum_input->text().toFloat();
-        }
-        RR_Alg();
-    }
+
 }
 
 
