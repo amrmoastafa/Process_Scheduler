@@ -19,6 +19,7 @@
 #include <QMessageBox>
 #include <QApplication>
 #include <QProcess>
+#include <QDoubleValidator>
 
 
 namespace Ui {
@@ -73,6 +74,7 @@ public:
     QPushButton *Simulate;
     QCheckBox *Preemptive_Checkbox;
     QMessageBox *msg_box;
+    QDoubleValidator *validator;
     QVector <Process *> Processes_Queue;
     //  -)The vector that contains pointers to processes can be treated  as queue
     //  -)Each element represents a process carrying its information

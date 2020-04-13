@@ -67,6 +67,10 @@ MainWindow::MainWindow(QWidget *parent) :
     this->scene_toolbar->addWidget(restart);
     connect(restart,SIGNAL(clicked()),this,SLOT(again())) ;
 
+    Avg_label= new QLabel();
+    Avg_label->setStyleSheet("color:rgb(78,204,163); background-color:rgb(128,128,128);font-size: 40px;");
+    Avg_label->setGeometry(500,50,700,70);
+
     //ui->setupUi(this);
 }
 
@@ -307,7 +311,9 @@ int MainWindow::RR_layout(){
     time_quantum_label->setText("Time Quantum");
     time_quantum_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
 
+    validator = new QDoubleValidator ();
     time_quantum_input = new QLineEdit();
+    time_quantum_input->setValidator(validator);
     time_quantum_input->setGeometry(175,250,80,30);
 
     this->scene_toolbar->addWidget(time_quantum_label);
@@ -390,11 +396,13 @@ int MainWindow::PRIORITY_layout(){
         /***creating a line edit and pushing the created line edit to a vector***/
         arrival_input = new QLineEdit();
         burst_input = new QLineEdit();
+        validator = new QDoubleValidator();
 
         priority_input = new QLineEdit();
         //priority_vect.push_back(priority_input);
         //priority_input->addItems({"1","2","3","4","5"});
         priority_input->setGeometry(220,300+height,40,30);
+        priority_input->setValidator(validator);
 
         this->layout()->addWidget(priority_input);
 
@@ -591,12 +599,12 @@ void MainWindow::SJF_NONP_Alg(){
             qDebug()<<arrive[q]->ID << "waiting time is"<<arrive[q]->Waiting_Time;
             sum=sum+arrive[q]->Waiting_Time;
         }
-        Avg_label= new QLabel();
+
         float avg=sum/arrive.size();
         qDebug()<<avg;
-        Avg_label->setStyleSheet("color:rgb(78,204,163); background-color:rgb(128,128,128);font-size: 40px;");
+
         Avg_label->setText(tr("Average Waiting Time= %1").arg(avg));
-        Avg_label->setGeometry(500,50,700,70);
+
         this->Scene->addWidget(Avg_label);
 
 }
