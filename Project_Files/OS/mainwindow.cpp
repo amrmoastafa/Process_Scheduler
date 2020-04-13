@@ -61,14 +61,14 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(Ok,SIGNAL(clicked()),this,SLOT(get_param())) ;
 
     restart = new QPushButton("♺");
-    restart->setStyleSheet(" QPushButton{ background-color:rgb(208,47,47); color:white; font-size: 17px; font-family: Arial;border-radius: 50%;} "
+    restart->setStyleSheet(" QPushButton{ background-color:rgb(0,0,128); color:white; font-size: 17px; font-family: Arial;border-radius: 50%;} "
                       "QPushButton:hover { background-color: white; border-radius:50%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
     restart->setGeometry(20,180,30,40);
     this->scene_toolbar->addWidget(restart);
     connect(restart,SIGNAL(clicked()),this,SLOT(again())) ;
 
     Avg_label= new QLabel();
-    Avg_label->setStyleSheet("color:rgb(78,204,163); background-color:rgb(128,128,128);font-size: 40px;");
+    Avg_label->setStyleSheet("color:rgb(0,0,128); background-color:rgb(128,128,128);font-size: 40px;");
     Avg_label->setGeometry(500,50,700,70);
 
     //ui->setupUi(this);
@@ -1526,7 +1526,7 @@ void MainWindow::RR_Alg()
                  Process_drawn->setText("IDLE");
                  Process_drawn->setStyleSheet(" QPushButton{ background-color:white; color:rgb(35,41,49); font-size: 17px; font-family: Arial;border-radius: 10%;} "
                                              "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
-                 Process_drawn->setGeometry(width_Prev,700,gap*25,50) ;
+                 Process_drawn->setGeometry(width_Prev,700,gap*60,70) ;
 
                  //this->layout()->addWidget(draw_process);
                  qDebug()<<"GAP: "<<gap*25;
@@ -1540,7 +1540,7 @@ void MainWindow::RR_Alg()
 
 
 
-                 width_Prev+=gap*25;
+                 width_Prev+=gap*60;
 
             }
 
@@ -1597,7 +1597,7 @@ void MainWindow::RR_Alg()
                                 }
 
 
-                                Process_drawn->setGeometry(width_Prev,700,Processes_Queue[i]->quantum_time*25,50);
+                                Process_drawn->setGeometry(width_Prev,700,Processes_Queue[i]->quantum_time*60,70);
                                 //this->layout()->addWidget(draw_process);
                                 qDebug()<<Processes_Queue[i]->quantum_time*25;
 
@@ -1609,7 +1609,7 @@ void MainWindow::RR_Alg()
                                 draw_time->setGeometry(width_Prev-5,780,60,30);
                                 this->Scene->addWidget(draw_time);
 
-                                width_Prev+=Processes_Queue[i]->quantum_time*25;
+                                width_Prev+=Processes_Queue[i]->quantum_time*60;
 
 
                                 //making remaining time = 0 to indicate process is done
@@ -1655,7 +1655,7 @@ void MainWindow::RR_Alg()
                                                                  "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
                                     break;
                                 }
-                                Process_drawn->setGeometry(width_Prev,700,Processes_Queue[k]->Remaining_Time*25,50);
+                                Process_drawn->setGeometry(width_Prev,700,Processes_Queue[k]->Remaining_Time*60,70);
                                 //this->layout()->addWidget(draw_process);
                                 qDebug()<<Processes_Queue[i]->Remaining_Time*25;
                                 this->Scene->addWidget(Process_drawn);
@@ -1666,7 +1666,7 @@ void MainWindow::RR_Alg()
                                 draw_time->setGeometry(width_Prev-5,780,60,30);
                                 this->Scene->addWidget(draw_time);
 
-                                width_Prev+=Processes_Queue[i]->Remaining_Time*25;
+                                width_Prev+=Processes_Queue[i]->Remaining_Time*60;
 
                                 //Processes_Queue[i]->Waiting_Time=time -Processes_Queue[i]->Burst_Time;
 
@@ -1690,7 +1690,7 @@ void MainWindow::RR_Alg()
                     Process_drawn->setText("IDLE");
                     Process_drawn->setStyleSheet(" QPushButton{ background-color:white; color:rgb(35,41,49); font-size: 17px; font-family: Arial;border-radius: 10%;} "
                                                 "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
-                    Process_drawn->setGeometry(width_Prev,700,gap*25,50);
+                    Process_drawn->setGeometry(width_Prev,700,gap*60,70);
                     //this->layout()->addWidget(draw_process);
                     qDebug()<<gap*25;
                     this->Scene->addWidget(Process_drawn);
@@ -1703,7 +1703,7 @@ void MainWindow::RR_Alg()
                     this->Scene->addWidget(draw_time);
 
 
-                    width_Prev+=gap*25;
+                    width_Prev+=gap*60;
 
                 }
                 k--;
@@ -1757,7 +1757,7 @@ void MainWindow::RR_Alg()
                                                              "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
                                 break;
                             }
-                            Process_drawn->setGeometry(width_Prev,700,Processes_Queue[k]->quantum_time*25,50);
+                            Process_drawn->setGeometry(width_Prev,700,Processes_Queue[k]->quantum_time*60,70);
                             //this->layout()->addWidget(draw_process);
                             qDebug()<<Processes_Queue[k]->quantum_time*25;
                             this->Scene->addWidget(Process_drawn);
@@ -1769,7 +1769,7 @@ void MainWindow::RR_Alg()
                             draw_time->setGeometry(width_Prev-5,780,60,30);
                             this->Scene->addWidget(draw_time);
 
-                            width_Prev+=Processes_Queue[k]->quantum_time*25;
+                            width_Prev+=Processes_Queue[k]->quantum_time*60;
 
 
                             //making remaining time = 0 to indicate process is done
@@ -1815,7 +1815,7 @@ void MainWindow::RR_Alg()
                                                              "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
                                 break;
                             }
-                            Process_drawn->setGeometry(width_Prev,700,Processes_Queue[k]->Remaining_Time*25,50);
+                            Process_drawn->setGeometry(width_Prev,700,Processes_Queue[k]->Remaining_Time*60,70);
                             //this->layout()->addWidget(draw_process);
                             qDebug()<<Processes_Queue[k]->Remaining_Time*25;
                             this->Scene->addWidget(Process_drawn);
@@ -1826,7 +1826,7 @@ void MainWindow::RR_Alg()
                             draw_time->setGeometry(width_Prev-5,780,60,30);
                             this->Scene->addWidget(draw_time);
 
-                            width_Prev+=Processes_Queue[k]->Remaining_Time*25;
+                            width_Prev+=Processes_Queue[k]->Remaining_Time*60;
 
                             //Processes_Queue[k]->Waiting_Time=time -Processes_Queue[k]->Burst_Time;
 
@@ -1865,6 +1865,7 @@ void MainWindow::RR_Alg()
     this->Scene->addWidget(Avg_label);
 
 }
+
 //this function is supposed to delete and start a new algorithm
 void MainWindow::again(){
    /* Simulate->deleteLater();
