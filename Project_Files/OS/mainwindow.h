@@ -37,8 +37,8 @@ class DrawingQueue
 {
 public:
     QString p_next;
-    int p_width;
-    int time_start;
+    float p_width;
+    float time_start;
 };
 
 class MainWindow : public QMainWindow
@@ -103,7 +103,8 @@ public:
     void SJF_P_Alg();
     void FCFS_Alg();
     void RR_Alg();
-    void Priority_Alg();
+    void Priority_AlgP();
+    void Priority_AlgNP();
 
 
 private:
