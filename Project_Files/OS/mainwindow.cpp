@@ -134,7 +134,8 @@ void MainWindow::Get_Text()
         qDebug() <<"Process : " <<Processes_Queue[j]->Process_name<<" Burst Time is : "<<Processes_Queue[j]->Burst_Time;
         if(Algorithm_dropdown->currentText() == "Priority")
         {
-            Processes_Queue[j]->Priority = ((priority_vect[j]->currentIndex())+1);
+            //Processes_Queue[j]->Priority = ((priority_vect[j]->currentIndex())+1);
+            Processes_Queue[j]->Priority=Priority_t[j]->text().toInt();
 
             qDebug() <<"Process : " <<Processes_Queue[j]->Process_name<<" Priority is : "<<Processes_Queue[j]->Priority;
 
@@ -149,6 +150,7 @@ void MainWindow::Get_Text()
     else if (Alg_chosen == "FCFS") FCFS_Alg();
     else if(Alg_chosen == "Priority")
     {
+
         if(Preemptive_Checkbox->isChecked())
         {
             Priority_AlgP();
@@ -377,9 +379,9 @@ int MainWindow::PRIORITY_layout(){
         arrival_input = new QLineEdit();
         burst_input = new QLineEdit();
 
-        priority_input = new QComboBox();
-        priority_vect.push_back(priority_input);
-        priority_input->addItems({"1","2","3","4","5"});
+        priority_input = new QLineEdit();
+        //priority_vect.push_back(priority_input);
+        //priority_input->addItems({"1","2","3","4","5"});
         priority_input->setGeometry(220,300+height,40,30);
 
         this->layout()->addWidget(priority_input);
@@ -391,6 +393,7 @@ int MainWindow::PRIORITY_layout(){
         // Appending that address to the pointer vector
         burst_time.push_back(burst_input);
         arrival_time.push_back(arrival_input);
+        Priority_t.push_back(priority_input);
 
         ID_Process = new QLabel();
 
@@ -1119,143 +1122,346 @@ void MainWindow::Priority_AlgNP()
 
 void MainWindow::Priority_AlgP()
 {
-
-    {
-        /*Sorting according to arrival time*/
-        /*Then Sorting According to priority*/
-
+    view->setAlignment(Qt::AlignLeft);
+        //intializing remaining time = burst time
         for(int i=0; i<Processes_Queue.size(); i++){
+            Processes_Queue[i]->Remaining_Time=Processes_Queue[i]->Burst_Time;
+        }
 
 
-            for(int j=i+1; j<Processes_Queue.size(); j++){
-
-                if(Processes_Queue[j]->Arrival_Time >  Processes_Queue[i]->Arrival_Time){
-                    Process *temp=Processes_Queue[j];
-                    Processes_Queue[j]=Processes_Queue[i];
-                    Processes_Queue[i]= temp;
-
-                }else if((Processes_Queue[j]->Arrival_Time == Processes_Queue[i]->Arrival_Time))
-                {
-                    if((Processes_Queue[i]->Priority < Processes_Queue[j]->Priority))
-                    {
-                        Processes_Queue[j]->Arrival_Time = Processes_Queue[i]->Arrival_Time + Processes_Queue[i]->Burst_Time;
+        /*sorting according to arrival time*/
+            for(int i=0; i<Processes_Queue.size(); i++){
+                for(int j=0; j<Processes_Queue.size(); j++){
+                    if(Processes_Queue[j]->Arrival_Time >  Processes_Queue[i]->Arrival_Time){
                         Process *temp=Processes_Queue[j];
                         Processes_Queue[j]=Processes_Queue[i];
                         Processes_Queue[i]= temp;
                     }
-
                 }
-
             }
-        }
+            for(int i=0;i<Processes_Queue.size();i++){
+                Processes_Queue[i]->Waiting_Time=0;
+                Processes_Queue[i]->Termination_Time=0;
+            }
+
+            QVector <Process *> arrive;
+            for(int i=0;i<Processes_Queue.size();i++){
+                arrive.push_back(Processes_Queue[i]);
+            }
+
+            QVector <Process *> DrawingSJFP;
+           // int time =Processes_Queue[0]->Arrival_Time;
+            float width_Prev=0;
+            float time=0;
+            int arrive_index=1;
+            int flag=-1;
+            while(Processes_Queue.size()!=0){
+                QVector<Process *> ready_processes;
+                for(int i=0; i<Processes_Queue.size();i++){
+                    /**check the ready processes**/
+                    if(Processes_Queue[i]->Arrival_Time<=time){
+                        ready_processes.push_back(Processes_Queue[i]);
+                    }
+                 }
+
+                    // If only one process is ready draw it
+                    if(ready_processes.size() == 1){
+                       // qDebug()<<ready_processes[0]->ID;
+
+                        float start_index=time;
+
+                        //adjust time
+                        if(arrive_index<arrive.size()){
+                            if(time+ready_processes[0]->Remaining_Time < arrive[arrive_index]->Arrival_Time){
+                                time = time + ready_processes[0]->Remaining_Time;
+                            }
+                            else{
+                                time=arrive[arrive_index]->Arrival_Time;
+                                flag=ready_processes[0]->ID;
+                            }
+                            arrive_index++;
+                        }
+                        else{
+                            time = time + ready_processes[0]->Remaining_Time;
+                        }
+
+
+                        for(int s=0;s<arrive.size();s++){
+                            if(ready_processes[0]->ID == arrive[s]->ID) {
+                                arrive[s]->Termination_Time=time;
+                            }
+                        }
+
+                        draw_process = new QLabel();
+                        draw_process->setText(tr("P %1").arg(ready_processes[0]->ID));
+                        draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
+                        draw_process->setGeometry(width_Prev,700,(time-start_index)*60,70);
+                        this->Scene->addWidget(draw_process);
+                        draw_time = new QLabel();
+                        draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
+                        draw_time->setText(tr(" %1").arg(start_index));
+                        draw_time->setGeometry(width_Prev,780,60,30);
+                        this->Scene->addWidget(draw_time);
+                        width_Prev=width_Prev + (time-start_index)*60;
+
+                       // DrawingSJFP.push_back(ready_processes[0]);
+                        for(int x=0;x<Processes_Queue.size();x++){
+                            if(Processes_Queue[x]->ID == ready_processes[0]->ID){
+                               Processes_Queue[x]->Remaining_Time =Processes_Queue[x]->Remaining_Time- (time-start_index);
+                               if(Processes_Queue[x]->Remaining_Time == 0){
+                                   Processes_Queue.erase(Processes_Queue.begin()+x);
+                               }
+                               break;
+                            }
+                         }
+                    }
+
+                    else if (ready_processes.size()==0){
+
+                        float start_index=time;
+                        time=arrive[arrive_index-1]->Arrival_Time;
+                         //arrive_index++;
+                         draw_process = new QLabel();
+                         draw_process->setText("GAP");
+                         draw_process->setStyleSheet("background-color:white;color:black;");
+                         draw_process->setGeometry(width_Prev ,700,(time-start_index)*60,70);
+                         this->Scene->addWidget(draw_process);
+                         draw_time = new QLabel();
+                         draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
+                         draw_time->setText(tr(" %1").arg(start_index));
+                         draw_time->setGeometry(width_Prev,780,60,30);
+                         this->Scene->addWidget(draw_time);
+                         width_Prev=width_Prev + (time-start_index)*60;
+                         Process *gap = new Process();
+                         gap->ID=-1;
+                         DrawingSJFP.push_back(gap);
+                    }
+
+                    /**if more than 1 process is ready compare their remaining time**/
+                    else{
+                        float min_Priority= ready_processes[0]->Priority;
+                        for(int j=0; j<ready_processes.size();j++){
+                           if(ready_processes[j]->Priority < min_Priority) min_Priority=ready_processes[j]->Priority;
+                        }
+
+                        for(int j=0; j<ready_processes.size();j++){
+                            //el min burst ersmha we ems7ha mn el Queue
+                            if(ready_processes[j]->Priority == min_Priority){
+                                //qDebug()<<ready_processes[j]->ID;
+
+                                //set waiting time
+
+                               float start_index=time;
+                                //adjust time
+                                if(arrive_index < arrive.size()){
+                                    if(time+ready_processes[j]->Remaining_Time < arrive[arrive_index]->Arrival_Time){
+
+                                        time = time + ready_processes[j]->Remaining_Time;
+                                    }
+                                    else {
+                                        time=arrive[arrive_index]->Arrival_Time;
+                                        flag = ready_processes[j]->ID;
+                                        arrive_index++;
+                                    }
+
+                                }
+                                else{
+                                    time = time + ready_processes[j]->Remaining_Time;
+                                    flag = ready_processes[j]->ID;
+                                }
+
+                                for(int s=0;s<arrive.size();s++){
+                                    if(ready_processes[j]->ID == arrive[s]->ID) {
+                                        arrive[s]->Termination_Time=time;
+                                    }
+                                }
+                                //Draw
+                                draw_process = new QLabel();
+                                draw_process->setText(tr("P %1").arg(ready_processes[j]->ID));
+                                draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
+                                draw_process->setGeometry(width_Prev,700,(time-start_index)*60,70);
+                                this->Scene->addWidget(draw_process);
+                                draw_time = new QLabel();
+                                draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
+                                draw_time->setText(tr(" %1").arg(start_index));
+                                draw_time->setGeometry(width_Prev,780,60,30);
+                                this->Scene->addWidget(draw_time);
+                                width_Prev=width_Prev + (time-start_index)*60;
+
+                                qDebug()<<time;
+                                //DrawingSJFP.push_back(ready_processes[j]);
+                                for(int x=0;x<Processes_Queue.size();x++){
+                                    if(Processes_Queue[x]->ID == ready_processes[j]->ID){
+                                        Processes_Queue[x]->Remaining_Time =Processes_Queue[x]->Remaining_Time- (time-start_index);
+                                        if(Processes_Queue[x]->Remaining_Time == 0) Processes_Queue.erase(Processes_Queue.begin()+x);
+                                       break;
+                                    }
+                                 }
+                                break;
+                            }
+
+                        }
+                    }
+            }
+
+            draw_time = new QLabel();
+            draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
+            draw_time->setText(tr(" %1").arg(time));
+            draw_time->setGeometry(width_Prev,780,60,30);
+            this->Scene->addWidget(draw_time);
+
+            float sum=0;
+            for(int q=0;q<arrive.size();q++){
+                sum=sum+(arrive[q]->Termination_Time-arrive[q]->Burst_Time-arrive[q]->Arrival_Time);
+            }
+            Avg_label= new QLabel();
+            float avg=sum/arrive.size();
+            qDebug()<<avg;
+            Avg_label->setStyleSheet("color:rgb(78,204,163); background-color:rgb(128,128,128);font-size: 40px;");
+            Avg_label->setText(tr("Average Waiting Time= %1").arg(avg));
+            Avg_label->setGeometry(500,50,700,70);
+            this->Scene->addWidget(Avg_label);
+}
+
+//void MainWindow::Priority_AlgP()
+//{
+
+   // {
+        /*Sorting according to arrival time*/
+        /*Then Sorting According to priority*/
+
+      //  for(int i=0; i<Processes_Queue.size(); i++){
+
+
+         //   for(int j=i+1; j<Processes_Queue.size(); j++){
+
+            //    if(Processes_Queue[j]->Arrival_Time >  Processes_Queue[i]->Arrival_Time){
+               //     Process *temp=Processes_Queue[j];
+                  //  Processes_Queue[j]=Processes_Queue[i];
+                    //Processes_Queue[i]= temp;
+
+                //}else if((Processes_Queue[j]->Arrival_Time == Processes_Queue[i]->Arrival_Time))
+                //{
+                   // if((Processes_Queue[i]->Priority < Processes_Queue[j]->Priority))
+                    //{
+                       // Processes_Queue[j]->Arrival_Time = Processes_Queue[i]->Arrival_Time + //Processes_Queue[i]->Burst_Time;
+   //                     Process *temp=Processes_Queue[j];
+      //                  Processes_Queue[j]=Processes_Queue[i];
+         //               Processes_Queue[i]= temp;
+            //        }
+
+               // }
+
+            //}
+        //}
 
         /*Arranging the drawing queue , which simulates the heap*/
-        Temp = new DrawingQueue;
+        //Temp = new DrawingQueue;
         //            for(int i = 0; i<Processes_Queue.size(); i++) qDebug()<< Processes_Queue[i]->Process_name << " Arrived :" <<Processes_Queue[i]->Arrival_Time << Processes_Queue[i]->Priority;
-        int time = 0;
-        int SizeOfDrawingQueue=0;
-        for(int i = 0; i < Processes_Queue.size();i++)
-        {
+//        int time = 0;
+   //     int SizeOfDrawingQueue=0;
+      //  for(int i = 0; i < Processes_Queue.size();i++)
+        //{
 
-            if( (Processes_Queue[i]->Arrival_Time) > time)
-            {
-
-
-                Temp->p_next = "Gap";Temp->p_width = ((Processes_Queue[i]->Arrival_Time) - time );Temp->time_start = time;
-                DrawingQueueFCFS.append(*Temp);
-                SizeOfDrawingQueue++;
-                time = time + Temp->p_width;
-
-                Temp->p_next = Processes_Queue[i]->Process_name;
-                Temp->p_width = Processes_Queue[i]->Burst_Time;
-                Temp->time_start = time;
-                DrawingQueueFCFS.append(*Temp);
-                SizeOfDrawingQueue++;
-                time = time + Temp->p_width;
+           // if( (Processes_Queue[i]->Arrival_Time) > time)
+            //{
 
 
-            }else if((Processes_Queue[i]->Arrival_Time) == time)
-            {
-                qDebug()<<Processes_Queue[i]->Process_name<<" Arrived on time";
-                Temp->p_next = Processes_Queue[i]->Process_name;
-                Temp->p_width = Processes_Queue[i]->Burst_Time;
-                Temp->time_start = time;
-                time = time + Temp->p_width;
-                DrawingQueueFCFS.append(*Temp);
-                SizeOfDrawingQueue++;
+               // Temp->p_next = "Gap";Temp->p_width = ((Processes_Queue[i]->Arrival_Time) - //time );Temp->time_start = time;
+   //             DrawingQueueFCFS.append(*Temp);
+      //          SizeOfDrawingQueue++;
+         //       time = time + Temp->p_width;
 
-            }
-            else if( (Processes_Queue[i]->Arrival_Time) < time)
-            {
+            //    Temp->p_next = Processes_Queue[i]->Process_name;
+               // Temp->p_width = Processes_Queue[i]->Burst_Time;
+                //Temp->time_start = time;
+                //DrawingQueueFCFS.append(*Temp);
+                //SizeOfDrawingQueue++;
+                //time = time + Temp->p_width;
+
+
+            //}else if((Processes_Queue[i]->Arrival_Time) == time)
+            //{
+               // qDebug()<<Processes_Queue[i]->Process_name<<" Arrived on time";
+                //Temp->p_next = Processes_Queue[i]->Process_name;
+                //Temp->p_width = Processes_Queue[i]->Burst_Time;
+                //Temp->time_start = time;
+                //time = time + Temp->p_width;
+                //DrawingQueueFCFS.append(*Temp);
+                //SizeOfDrawingQueue++;
+
+            //}
+            //else if( (Processes_Queue[i]->Arrival_Time) < time)
+            //{
                 //Process Arrived While another one was executing
                 //Processes after this one in queue must either have
                 //Lower priority of arrival time
-                if(Processes_Queue[i]->Priority < Processes_Queue[i-1]->Priority)
-                {
-                    qDebug()<<"Higher Priority Detected";
+               // if(Processes_Queue[i]->Priority < Processes_Queue[i-1]->Priority)
+                //{
+                   // qDebug()<<"Higher Priority Detected";
                     //Decrease width of the process before this one and keep the remaining time
-                    DrawingQueueFCFS[SizeOfDrawingQueue - 1].p_width = (Processes_Queue[i]->Arrival_Time - Processes_Queue[i-1]->Arrival_Time);
-                    Temp->p_next = Processes_Queue[i]->Process_name;
-                    Temp->p_width = Processes_Queue[i]->Burst_Time;
-                    Temp->time_start = Processes_Queue[i]->Arrival_Time;
+                   // DrawingQueueFCFS[SizeOfDrawingQueue - 1].p_width = (Processes_Queue[i]->Arrival_Time - Processes_Queue[i-1]->Arrival_Time);
+                    //Temp->p_next = Processes_Queue[i]->Process_name;
+                    //Temp->p_width = Processes_Queue[i]->Burst_Time;
+                    //Temp->time_start = Processes_Queue[i]->Arrival_Time;
 
                     //Add this process with its full width to the  queue
-                    DrawingQueueFCFS.append(*Temp);
+                    //DrawingQueueFCFS.append(*Temp);
                     //re add the part that you removed
-                    Temp->p_next = Processes_Queue[i-1]->Process_name;
-                    Temp->p_width = (Processes_Queue[i-1]->Burst_Time - (Processes_Queue[i]->Arrival_Time - Processes_Queue[i-1]->Arrival_Time));
-                    time += Processes_Queue[i]->Arrival_Time + Processes_Queue[i]->Burst_Time;
-                    Temp->time_start = Processes_Queue[i]->Arrival_Time + Processes_Queue[i]->Burst_Time;
-                    DrawingQueueFCFS.append(*Temp);
+                    //Temp->p_next = Processes_Queue[i-1]->Process_name;
+                    //Temp->p_width = (Processes_Queue[i-1]->Burst_Time - (Processes_Queue[i]->Arrival_Time - Processes_Queue[i-1]->Arrival_Time));
+                    //time += Processes_Queue[i]->Arrival_Time + Processes_Queue[i]->Burst_Time;
+                    //Temp->time_start = Processes_Queue[i]->Arrival_Time + Processes_Queue[i]->Burst_Time;
+                    //DrawingQueueFCFS.append(*Temp);
 
 
 
-                }else
-                {
-                    qDebug()<<Processes_Queue[i]->Process_name <<" ** "<<Processes_Queue[i-1]->Process_name;
-                    qDebug()<<"Arrived at same time";
+                //}else
+                //{
+                   // qDebug()<<Processes_Queue[i]->Process_name <<" ** "<<Processes_Queue[i-1]->Process_name;
+                    //qDebug()<<"Arrived at same time";
 
-                    Temp->p_next = Processes_Queue[i]->Process_name;
-                    Temp->p_width = Processes_Queue[i]->Burst_Time;
-                    Temp->time_start = time;
-                    time = time + Temp->p_width;
-                    DrawingQueueFCFS.append(*Temp);
-                    SizeOfDrawingQueue++;}
+                    //Temp->p_next = Processes_Queue[i]->Process_name;
+                    //Temp->p_width = Processes_Queue[i]->Burst_Time;
+                    //Temp->time_start = time;
+                    //time = time + Temp->p_width;
+                    //DrawingQueueFCFS.append(*Temp);
+                    //SizeOfDrawingQueue++;}
 
-            }
-        }
+            //}
+        //}
         //        for(int i = 0; i<DrawingQueueFCFS.size(); i++) qDebug()<< DrawingQueueFCFS[i].p_next << " Arrived :" <<DrawingQueueFCFS[i].p_width;
-        time = 0;
+        //time = 0;
 
-        for(int i = 0 ; i < DrawingQueueFCFS.size();i++)
-        {
-            Process_drawn = new QPushButton();
-            Process_drawn->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 10%;} "
+        //for(int i = 0 ; i < DrawingQueueFCFS.size();i++)
+        //{
+           // Process_drawn = new QPushButton();
+            //Process_drawn->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 10%;} "
                                          "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
 
 
 
-            if(DrawingQueueFCFS[i].p_next == "Gap")
-            {
+            //if(DrawingQueueFCFS[i].p_next == "Gap")
+            //{
 
-                Process_drawn->setGeometry( time,0,(DrawingQueueFCFS[i].p_width*25),100);
-                Process_drawn->setText(DrawingQueueFCFS[i].p_next);
-                Process_drawn->setStyleSheet(" QPushButton{ background-color:white; color:black; font-size: 17px; font-family: Arial;border-radius: 10%;} "
+               // Process_drawn->setGeometry( time,0,(DrawingQueueFCFS[i].p_width*25),100);
+                //Process_drawn->setText(DrawingQueueFCFS[i].p_next);
+                //Process_drawn->setStyleSheet(" QPushButton{ background-color:white; color:black; font-size: 17px; font-family: Arial;border-radius: 10%;} "
                                              "QPushButton:hover { background-color: black; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:white;} ");
-                Scene->addWidget(Process_drawn);
-                time += ((DrawingQueueFCFS[i].p_width*25));
-            }else
-            {
-                Process_drawn->setGeometry(time,0,(DrawingQueueFCFS[i].p_width*25),100);
-                Process_drawn->setText(DrawingQueueFCFS[i].p_next);
-                Process_drawn->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 10%;} "
+                //Scene->addWidget(Process_drawn);
+                //time += ((DrawingQueueFCFS[i].p_width*25));
+            //}else
+            //{
+               // Process_drawn->setGeometry(time,0,(DrawingQueueFCFS[i].p_width*25),100);
+                //Process_drawn->setText(DrawingQueueFCFS[i].p_next);
+                //Process_drawn->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 10%;} "
                                              "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
-                Scene->addWidget(Process_drawn);
-                time += ((DrawingQueueFCFS[i].p_width*25));
-            }
-        }
-    }
-}
+                //Scene->addWidget(Process_drawn);
+                //time += ((DrawingQueueFCFS[i].p_width*25));
+            //}
+        //}
+    //}
+//}
 
 
 void MainWindow::RR_Alg()

@@ -55,7 +55,7 @@ public:
     QLineEdit *arrival_input;
     QLineEdit *burst_input;
     QLineEdit *time_quantum_input;
-    QComboBox *priority_input;
+    QLineEdit *priority_input;
     QComboBox *Algorithm_dropdown;
     QPushButton *m_button;
     QToolBar *toolbar;
@@ -78,6 +78,7 @@ public:
     //  -)Each element represents a process carrying its information
     QVector <QLineEdit *> burst_time;
     QVector <QLineEdit *> arrival_time;
+    QVector <QLineEdit *> Priority_t;
     QVector <QComboBox *> priority_vect;
     QVector <DrawingQueue >  DrawingQueueFCFS;
 
