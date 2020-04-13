@@ -1723,7 +1723,7 @@ void MainWindow::RR_Alg()
 
                 //vector_done = false;
 
-                while(tot_rem_time!=0)
+                while(tot_rem_time!=0 && Processes_Queue[k]->Arrival_Time > time)
                 {
                     for(int i=0;i<temp;i++)
                     {
