@@ -1491,6 +1491,7 @@ void MainWindow::RR_Alg()
 
     float time = 0;
     float gap=0;
+    float start_index=0;
     float width_Prev=0;
     int first_time=1;
     float avg_waiting_time=0;
@@ -1514,17 +1515,27 @@ void MainWindow::RR_Alg()
             //checking for gap in the beginning
             if(Processes_Queue[0]->Arrival_Time>0 && k==0 && first_time)
             {
-                     gap=Processes_Queue[0]->Arrival_Time;
-                     time+=gap;
+                 start_index=time;
+                 gap=Processes_Queue[0]->Arrival_Time;
+                 time+=gap;
 
-                     draw_process = new QLabel();
-                     draw_process->setText("GAP");
-                     draw_process->setStyleSheet("background-color:white;color:black; border-width: 1px; border-style:solid; border-color: black;");
-                     draw_process->setGeometry(width_Prev,700,gap*25,50) ;
-                     //this->layout()->addWidget(draw_process);
-                     qDebug()<<"GAP: "<<gap*25;
-                     this->Scene->addWidget(draw_process);
-                     width_Prev+=gap*25;
+                 draw_process = new QLabel();
+                 draw_process->setText("GAP");
+                 draw_process->setStyleSheet("background-color:white;color:black; border-width: 1px; border-style:solid; border-color: black;");
+                 draw_process->setGeometry(width_Prev,700,gap*25,50) ;
+
+                 //this->layout()->addWidget(draw_process);
+                 qDebug()<<"GAP: "<<gap*25;
+                 this->Scene->addWidget(draw_process);
+
+                 draw_time = new QLabel();
+                 draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
+                 draw_time->setText(tr(" %1").arg(start_index));
+                 draw_time->setGeometry(width_Prev,780,60,30);
+                 this->Scene->addWidget(draw_time);
+
+
+                 width_Prev+=gap*25;
 
             }
 
@@ -1550,7 +1561,7 @@ void MainWindow::RR_Alg()
                                 {
                                     Processes_Queue[i]->Waiting_Time+=Processes_Queue[i]->Arrival_Time-Processes_Queue[i]->old_finish_time;
                                 }
-
+                                start_index=time;
                                 time += Processes_Queue[i]->quantum_time;
                                 Processes_Queue[i]->old_finish_time=time;
 
@@ -1561,7 +1572,15 @@ void MainWindow::RR_Alg()
                                 draw_process->setGeometry(width_Prev,700,Processes_Queue[i]->quantum_time*25,50);
                                 //this->layout()->addWidget(draw_process);
                                 qDebug()<<Processes_Queue[i]->quantum_time*25;
+
                                 this->Scene->addWidget(draw_process);
+
+                                draw_time = new QLabel();
+                                draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
+                                draw_time->setText(tr(" %1").arg(start_index));
+                                draw_time->setGeometry(width_Prev-5,780,60,30);
+                                this->Scene->addWidget(draw_time);
+
                                 width_Prev+=Processes_Queue[i]->quantum_time*25;
 
 
@@ -1581,6 +1600,7 @@ void MainWindow::RR_Alg()
                                     Processes_Queue[i]->Waiting_Time+=Processes_Queue[i]->Arrival_Time-Processes_Queue[i]->old_finish_time;
                                 }
 
+                                start_index=time;
                                 time += Processes_Queue[i]->Remaining_Time;
                                 Processes_Queue[i]->old_finish_time=time;
 
@@ -1592,6 +1612,13 @@ void MainWindow::RR_Alg()
                                 //this->layout()->addWidget(draw_process);
                                 qDebug()<<Processes_Queue[i]->Remaining_Time*25;
                                 this->Scene->addWidget(draw_process);
+
+                                draw_time = new QLabel();
+                                draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
+                                draw_time->setText(tr(" %1").arg(start_index));
+                                draw_time->setGeometry(width_Prev-5,780,60,30);
+                                this->Scene->addWidget(draw_time);
+
                                 width_Prev+=Processes_Queue[i]->Remaining_Time*25;
 
                                 //Processes_Queue[i]->Waiting_Time=time -Processes_Queue[i]->Burst_Time;
@@ -1608,6 +1635,7 @@ void MainWindow::RR_Alg()
                 if(tot_rem_time==0 && Processes_Queue[k]->Arrival_Time > time)
                 {
                     float gap=Processes_Queue[k]->Arrival_Time-time;
+                    start_index=time;
                     time =Processes_Queue[k]->Arrival_Time;
 
                     //drawing the quantum time
@@ -1618,6 +1646,15 @@ void MainWindow::RR_Alg()
                     //this->layout()->addWidget(draw_process);
                     qDebug()<<gap*25;
                     this->Scene->addWidget(draw_process);
+
+
+                    draw_time = new QLabel();
+                    draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
+                    draw_time->setText(tr(" %1").arg(start_index));
+                    draw_time->setGeometry(width_Prev-5,780,60,30);
+                    this->Scene->addWidget(draw_time);
+
+
                     width_Prev+=gap*25;
 
                 }
@@ -1644,6 +1681,8 @@ void MainWindow::RR_Alg()
                                 Processes_Queue[k]->Waiting_Time+=Processes_Queue[k]->Arrival_Time-Processes_Queue[k]->old_finish_time;
                             }
 
+                            start_index=time;
+
                             time += Processes_Queue[k]->quantum_time;
                             Processes_Queue[k]->old_finish_time=time;
                             //drawing the quantum time
@@ -1654,6 +1693,14 @@ void MainWindow::RR_Alg()
                             //this->layout()->addWidget(draw_process);
                             qDebug()<<Processes_Queue[k]->quantum_time*25;
                             this->Scene->addWidget(draw_process);
+
+
+                            draw_time = new QLabel();
+                            draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
+                            draw_time->setText(tr(" %1").arg(start_index));
+                            draw_time->setGeometry(width_Prev-5,780,60,30);
+                            this->Scene->addWidget(draw_time);
+
                             width_Prev+=Processes_Queue[k]->quantum_time*25;
 
 
@@ -1673,6 +1720,8 @@ void MainWindow::RR_Alg()
                                 Processes_Queue[k]->Waiting_Time+=Processes_Queue[k]->Arrival_Time-Processes_Queue[k]->old_finish_time;
                             }
 
+                            start_index=time;
+
                             time += Processes_Queue[k]->Remaining_Time;
                             Processes_Queue[k]->old_finish_time=time;
 
@@ -1684,6 +1733,13 @@ void MainWindow::RR_Alg()
                             //this->layout()->addWidget(draw_process);
                             qDebug()<<Processes_Queue[k]->Remaining_Time*25;
                             this->Scene->addWidget(draw_process);
+
+                            draw_time = new QLabel();
+                            draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
+                            draw_time->setText(tr(" %1").arg(start_index));
+                            draw_time->setGeometry(width_Prev-5,780,60,30);
+                            this->Scene->addWidget(draw_time);
+
                             width_Prev+=Processes_Queue[k]->Remaining_Time*25;
 
                             //Processes_Queue[k]->Waiting_Time=time -Processes_Queue[k]->Burst_Time;
@@ -1703,7 +1759,15 @@ void MainWindow::RR_Alg()
 
         first_time=0;
         if(vector_done == true)
+        {
+            start_index=time;
+            draw_time = new QLabel();
+            draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
+            draw_time->setText(tr(" %1").arg(start_index));
+            draw_time->setGeometry(width_Prev-15,780,60,30);
+            this->Scene->addWidget(draw_time);
             break;
+        }
     }
     for(int l=0;l<Processes_Queue.size();l++)
     {
