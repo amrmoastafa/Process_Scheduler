@@ -139,7 +139,7 @@ void MainWindow::Get_Text()
             qDebug() <<"Process : " <<Processes_Queue[j]->Process_name<<" Priority is : "<<Processes_Queue[j]->Priority;
 
         }
-	
+
 
     }
 
@@ -153,7 +153,7 @@ void MainWindow::Get_Text()
         /*Initializing quantum time*/
         for(int l=0; l<Processes_Queue.size();l++)
         {
-            Processes_Queue[l]->quantum_time=time_quantum_input->text().toInt();
+            Processes_Queue[l]->quantum_time=time_quantum_input->text().toFloat();
         }
         RR_Alg();
     }
@@ -1020,9 +1020,11 @@ void MainWindow::RR_Alg()
     }
 
     //initializing remaining time = burst time
+    //and waiting time to be zero
     for(int s=0; s<Processes_Queue.size(); s++)
     {
         Processes_Queue[s]->Remaining_Time=Processes_Queue[s]->Burst_Time;
+        Processes_Queue[s]->Waiting_Time=0;
     }
     qDebug()<< "HI " ;
 
@@ -1030,6 +1032,8 @@ void MainWindow::RR_Alg()
     float gap=0;
     float width_Prev=0;
     int first_time=1;
+    float avg_waiting_time=0;
+    float tot_avg_waiting_time=0;
     while(1)
     {
         bool vector_done = true;
@@ -1077,7 +1081,17 @@ void MainWindow::RR_Alg()
                         {
                             if(Processes_Queue[i]->Remaining_Time>Processes_Queue[i]->quantum_time)
                             {
+                                if(first_time)
+                                {
+                                    Processes_Queue[i]->Waiting_Time=time-Processes_Queue[i]->Arrival_Time;
+                                }
+                                else
+                                {
+                                    Processes_Queue[i]->Waiting_Time+=Processes_Queue[i]->Arrival_Time-Processes_Queue[i]->old_finish_time;
+                                }
+
                                 time += Processes_Queue[i]->quantum_time;
+                                Processes_Queue[i]->old_finish_time=time;
 
                                 //drawing the quantum time
                                 draw_process = new QLabel();
@@ -1097,7 +1111,17 @@ void MainWindow::RR_Alg()
 
                             else
                             {
+                                if(first_time)
+                                {
+                                    Processes_Queue[i]->Waiting_Time=time-Processes_Queue[i]->Arrival_Time;
+                                }
+                                else
+                                {
+                                    Processes_Queue[i]->Waiting_Time+=Processes_Queue[i]->Arrival_Time-Processes_Queue[i]->old_finish_time;
+                                }
+
                                 time += Processes_Queue[i]->Remaining_Time;
+                                Processes_Queue[i]->old_finish_time=time;
 
                                 //drawing the quantum time
                                 draw_process = new QLabel();
@@ -1109,7 +1133,7 @@ void MainWindow::RR_Alg()
                                 this->Scene->addWidget(draw_process);
                                 width_Prev+=Processes_Queue[i]->Remaining_Time*25;
 
-                                Processes_Queue[i]->Waiting_Time=time -Processes_Queue[i]->Burst_Time;
+                                //Processes_Queue[i]->Waiting_Time=time -Processes_Queue[i]->Burst_Time;
 
                                 //making remaining time = 0 to indicate process is done
                                 Processes_Queue[i]->Remaining_Time=0;
@@ -1150,8 +1174,17 @@ void MainWindow::RR_Alg()
 
                         if(Processes_Queue[k]->Remaining_Time>Processes_Queue[k]->quantum_time)
                         {
-                            time += Processes_Queue[k]->quantum_time;
+                            if(first_time)
+                            {
+                                Processes_Queue[k]->Waiting_Time=time-Processes_Queue[k]->Arrival_Time;
+                            }
+                            else
+                            {
+                                Processes_Queue[k]->Waiting_Time+=Processes_Queue[k]->Arrival_Time-Processes_Queue[k]->old_finish_time;
+                            }
 
+                            time += Processes_Queue[k]->quantum_time;
+                            Processes_Queue[k]->old_finish_time=time;
                             //drawing the quantum time
                             draw_process = new QLabel();
                             draw_process->setText(tr("P %1").arg(Processes_Queue[k]->ID));
@@ -1170,7 +1203,17 @@ void MainWindow::RR_Alg()
 
                         else
                         {
+                            if(first_time)
+                            {
+                                Processes_Queue[k]->Waiting_Time=time-Processes_Queue[k]->Arrival_Time;
+                            }
+                            else
+                            {
+                                Processes_Queue[k]->Waiting_Time+=Processes_Queue[k]->Arrival_Time-Processes_Queue[k]->old_finish_time;
+                            }
+
                             time += Processes_Queue[k]->Remaining_Time;
+                            Processes_Queue[k]->old_finish_time=time;
 
                             //drawing the quantum time
                             draw_process = new QLabel();
@@ -1182,7 +1225,7 @@ void MainWindow::RR_Alg()
                             this->Scene->addWidget(draw_process);
                             width_Prev+=Processes_Queue[k]->Remaining_Time*25;
 
-                            Processes_Queue[k]->Waiting_Time=time -Processes_Queue[k]->Burst_Time;
+                            //Processes_Queue[k]->Waiting_Time=time -Processes_Queue[k]->Burst_Time;
 
                             //making remaining time = 0 to indicate process is done
                             Processes_Queue[k]->Remaining_Time=0;
@@ -1201,6 +1244,19 @@ void MainWindow::RR_Alg()
         if(vector_done == true)
             break;
     }
+    for(int l=0;l<Processes_Queue.size();l++)
+    {
+        avg_waiting_time+=Processes_Queue[l]->Waiting_Time;
+    }
+
+    Avg_label= new QLabel();
+    int n=Processes_Queue.size();
+    tot_avg_waiting_time=avg_waiting_time/(float)n;
+    qDebug()<<tot_avg_waiting_time;
+    Avg_label->setStyleSheet("color:rgb(78,204,163); background-color:rgb(128,128,128);font-size: 40px;");
+    Avg_label->setText(tr("Average Waiting Time= %1").arg(abs(tot_avg_waiting_time)));
+    Avg_label->setGeometry(500,50,700,70);
+    this->Scene->addWidget(Avg_label);
 
 }
 //this function is supposed to delete and start a new algorithm
@@ -1219,7 +1275,6 @@ void MainWindow::again(){
             deletelabel = new QLabel();
             deletelabel2 = new QLabel();
             deletelabel3 = new QLabel();
-
             deletelabel->setGeometry(20,300+height,30,30);
             deletelabel->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
             deletelabel2->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
@@ -1230,7 +1285,6 @@ void MainWindow::again(){
             deletelabel3->setGeometry(170,300+height,80,30);
             this->scene_toolbar->addWidget(deletelabel);
             height+=50;
-
         }
         deletechart = new QLabel();
         deletechart->setGeometry(0,700,1000,50);
