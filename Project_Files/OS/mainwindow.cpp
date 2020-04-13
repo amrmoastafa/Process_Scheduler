@@ -483,9 +483,10 @@ void MainWindow::SJF_NONP_Alg(){
                 if(ready_processes.size() == 1){
                     //draw
                     qDebug()<<ready_processes[0]->ID;
-                    draw_process = new QLabel();
+                    draw_process = new QPushButton();
                     draw_process->setText(tr("P %1").arg(ready_processes[0]->ID));
-                    draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
+                    draw_process->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 10%;border-width: 0.5px; border-style: solid; border-color: gray ;} "
+                                                "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
                     draw_process->setGeometry(width_Prev,700,ready_processes[0]->Burst_Time*60,70);
                     draw_time = new QLabel();
                     draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
@@ -512,8 +513,8 @@ void MainWindow::SJF_NONP_Alg(){
                 }
                 else if (ready_processes.size()==0) {
                     //draw gap
-                    draw_process = new QLabel();
-                    draw_process->setText("GAP");
+                    draw_process = new QPushButton();
+                    draw_process->setText("Idle");
                     draw_process->setStyleSheet("background-color:white;color:black; border-width: 2px; border-style: solid; border-color: gray;");
                     draw_process->setGeometry(width_Prev ,700,1*60,70);
                     //this->layout()->addWidget(draw_process);
@@ -549,9 +550,10 @@ void MainWindow::SJF_NONP_Alg(){
                             }
 
                             //Draw
-                            draw_process = new QLabel();
+                            draw_process = new QPushButton();
                             draw_process->setText(tr("P %1").arg(ready_processes[j]->ID));
-                            draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
+                            draw_process->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 10%;border-width: 0.5px; border-style: solid; border-color: gray ;} "
+                                                        "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
                             draw_process->setGeometry(width_Prev ,700,ready_processes[j]->Burst_Time*60,70);
                             //this->layout()->addWidget(draw_process);
                             draw_time = new QLabel();
@@ -695,9 +697,10 @@ void MainWindow::SJF_P_Alg(){
                             }
                         }
 
-                        draw_process = new QLabel();
+                        draw_process = new QPushButton();
                         draw_process->setText(tr("P %1").arg(ready_processes[0]->ID));
-                        draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
+                        draw_process->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 10%;border-width: 0.5px; border-style: solid; border-color: gray ;} "
+                                                    "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
                         draw_process->setGeometry(width_Prev,700,(time-start_index)*60,70);
                         this->Scene->addWidget(draw_process);
                         draw_time = new QLabel();
@@ -724,8 +727,8 @@ void MainWindow::SJF_P_Alg(){
                         float start_index=time;
                         time=arrive[arrive_index-1]->Arrival_Time;
                          //arrive_index++;
-                         draw_process = new QLabel();
-                         draw_process->setText("GAP");
+                         draw_process = new QPushButton();
+                         draw_process->setText("Idle");
                          draw_process->setStyleSheet("background-color:white;color:black;");
                          draw_process->setGeometry(width_Prev ,700,(time-start_index)*60,70);
                          this->Scene->addWidget(draw_process);
@@ -796,9 +799,10 @@ void MainWindow::SJF_P_Alg(){
                                     }
                                 }
                                 //Draw
-                                draw_process = new QLabel();
+                                draw_process = new QPushButton();
                                 draw_process->setText(tr("P %1").arg(ready_processes[j]->ID));
-                                draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
+                                draw_process->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 10%;border-width: 0.5px; border-style: solid; border-color: gray ;} "
+                                                            "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
                                 draw_process->setGeometry(width_Prev,700,(time-start_index)*60,70);
                                 this->Scene->addWidget(draw_process);
                                 draw_time = new QLabel();
@@ -1212,9 +1216,10 @@ void MainWindow::Priority_AlgP()
                             }
                         }
 
-                        draw_process = new QLabel();
+                        draw_process = new QPushButton();
                         draw_process->setText(tr("P %1").arg(ready_processes[0]->ID));
-                        draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
+                        draw_process->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 10%;border-width: 0.5px; border-style: solid; border-color: gray ;} "
+                                                    "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
                         draw_process->setGeometry(width_Prev,700,(time-start_index)*60,70);
                         this->Scene->addWidget(draw_process);
                         draw_time = new QLabel();
@@ -1241,8 +1246,8 @@ void MainWindow::Priority_AlgP()
                         float start_index=time;
                         time=arrive[arrive_index-1]->Arrival_Time;
                          //arrive_index++;
-                         draw_process = new QLabel();
-                         draw_process->setText("GAP");
+                         draw_process = new QPushButton();
+                         draw_process->setText("Idle");
                          draw_process->setStyleSheet("background-color:white;color:black;");
                          draw_process->setGeometry(width_Prev ,700,(time-start_index)*60,70);
                          this->Scene->addWidget(draw_process);
@@ -1296,9 +1301,10 @@ void MainWindow::Priority_AlgP()
                                     }
                                 }
                                 //Draw
-                                draw_process = new QLabel();
+                                draw_process = new QPushButton();
                                 draw_process->setText(tr("P %1").arg(ready_processes[j]->ID));
-                                draw_process->setStyleSheet("background-color:black;color:white; border-width: 2px; border-style: solid; border-color: gray;");
+                                draw_process->setStyleSheet(" QPushButton{ background-color:rgb(35,41,49); color:white; font-size: 17px; font-family: Arial;border-radius: 10%;border-width: 0.5px; border-style: solid; border-color: gray ;} "
+                                                            "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
                                 draw_process->setGeometry(width_Prev,700,(time-start_index)*60,70);
                                 this->Scene->addWidget(draw_process);
                                 draw_time = new QLabel();
@@ -1539,7 +1545,7 @@ void MainWindow::RR_Alg()
                  gap=Processes_Queue[0]->Arrival_Time;
                  time+=gap;
 
-                 draw_process = new QLabel();
+                 draw_process = new QPushButton();
                  draw_process->setText("GAP");
                  draw_process->setStyleSheet("background-color:white;color:black; border-width: 1px; border-style:solid; border-color: black;");
                  draw_process->setGeometry(width_Prev,700,gap*25,50) ;
@@ -1586,7 +1592,7 @@ void MainWindow::RR_Alg()
                                 Processes_Queue[i]->old_finish_time=time;
 
                                 //drawing the quantum time
-                                draw_process = new QLabel();
+                                draw_process = new QPushButton();
                                 draw_process->setText(tr("P %1").arg(Processes_Queue[i]->ID));
                                 draw_process->setStyleSheet("background-color:black;color:white; border-width: 1px; border-style:solid; border-color: white;");
                                 draw_process->setGeometry(width_Prev,700,Processes_Queue[i]->quantum_time*25,50);
@@ -1625,7 +1631,7 @@ void MainWindow::RR_Alg()
                                 Processes_Queue[i]->old_finish_time=time;
 
                                 //drawing the quantum time
-                                draw_process = new QLabel();
+                                draw_process = new QPushButton();
                                 draw_process->setText(tr("P %1").arg(Processes_Queue[i]->ID));
                                 draw_process->setStyleSheet("background-color:black;color:white; border-width: 1px; border-style:solid; border-color: white;");
                                 draw_process->setGeometry(width_Prev,700,Processes_Queue[k]->Remaining_Time*25,50);
@@ -1659,7 +1665,7 @@ void MainWindow::RR_Alg()
                     time =Processes_Queue[k]->Arrival_Time;
 
                     //drawing the quantum time
-                    draw_process = new QLabel();
+                    draw_process = new QPushButton();
                     draw_process->setText("GAP");
                     draw_process->setStyleSheet("background-color:white;color:black; border-width: 1px; border-style:solid; border-color: black;");
                     draw_process->setGeometry(width_Prev,700,gap*25,50);
@@ -1706,7 +1712,7 @@ void MainWindow::RR_Alg()
                             time += Processes_Queue[k]->quantum_time;
                             Processes_Queue[k]->old_finish_time=time;
                             //drawing the quantum time
-                            draw_process = new QLabel();
+                            draw_process = new QPushButton();
                             draw_process->setText(tr("P %1").arg(Processes_Queue[k]->ID));
                             draw_process->setStyleSheet("background-color:black;color:white; border-width: 1px; border-style:solid; border-color: white;");
                             draw_process->setGeometry(width_Prev,700,Processes_Queue[k]->quantum_time*25,50);
@@ -1746,7 +1752,7 @@ void MainWindow::RR_Alg()
                             Processes_Queue[k]->old_finish_time=time;
 
                             //drawing the quantum time
-                            draw_process = new QLabel();
+                            draw_process = new QPushButton();
                             draw_process->setText(tr("P %1").arg(Processes_Queue[k]->ID));
                             draw_process->setStyleSheet("background-color:black;color:white; border-width: 1px; border-style:solid; border-color: white;");
                             draw_process->setGeometry(width_Prev,700,Processes_Queue[k]->Remaining_Time*25,50);

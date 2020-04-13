@@ -85,7 +85,7 @@ public:
     QVector <DrawingQueue >  DrawingQueueFCFS;
 
     /**for drawing**/
-    QLabel *draw_process;
+    QPushButton *draw_process;
     QLabel *draw_time;
     QGraphicsScene *scene_toolbar;
     QScrollArea * scrollArea;
