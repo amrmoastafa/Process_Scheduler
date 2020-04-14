@@ -57,6 +57,7 @@ public:
     QLineEdit *burst_input;
     QLineEdit *time_quantum_input;
     QLineEdit *priority_input;
+
     QComboBox *Algorithm_dropdown;
     QPushButton *m_button;
     QToolBar *toolbar;

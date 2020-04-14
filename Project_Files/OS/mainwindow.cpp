@@ -384,7 +384,6 @@ int MainWindow::PRIORITY_layout(){
 
 
 
-
     arrival_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
     burst_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
 
@@ -404,8 +403,9 @@ int MainWindow::PRIORITY_layout(){
         //priority_input->addItems({"1","2","3","4","5"});
         priority_input->setGeometry(220,300+height,40,30);
         priority_input->setValidator(validator);
+        priority_input->setStyleSheet("background-color:rgb(78,204,163);");
 
-        this->layout()->addWidget(priority_input);
+        //this->layout()->addWidget(priority_input);
 
         Process *p = new Process;
 
@@ -470,6 +470,7 @@ void MainWindow::SJF_NONP_Alg(){
         float time=0;
         float width_Prev=0;
         int arrive_index = 1;
+        int test_ID;
 
         while(Processes_Queue.size() !=0){
             QVector<Process *> ready_processes;
@@ -505,7 +506,9 @@ void MainWindow::SJF_NONP_Alg(){
                         draw_process->setStyleSheet(" QPushButton{ background-color:#8566aa; color:white; font-size: 17px; font-family: Arial;border-radius: 10%;} "
                                                      "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
                         break;
-                    }                      draw_process->setGeometry(width_Prev,700,ready_processes[0]->Burst_Time*60,70);
+                    }
+                    draw_process->setGeometry(width_Prev,700,ready_processes[0]->Burst_Time*60,70);
+
                     draw_time = new QLabel();
                     draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
                     draw_time->setText(tr(" %1").arg(time));
@@ -518,12 +521,35 @@ void MainWindow::SJF_NONP_Alg(){
 
                     width_Prev=width_Prev + ready_processes[0]->Burst_Time*60;
                     for(int s=0;s<arrive.size();s++){
-                        if(ready_processes[0]->ID == arrive[s]->ID) arrive[s]->Waiting_Time=time-arrive[s]->Arrival_Time;
+                        if(ready_processes[0]->ID == arrive[s]->ID) {
+                            arrive[s]->Waiting_Time=time-arrive[s]->Arrival_Time;
+                            test_ID=s;
+                        }
                     }
                     arrive_index++;
                     time= time + ready_processes[0]->Burst_Time;
                     for(int x=0;x<Processes_Queue.size();x++){
                         if(Processes_Queue[x]->ID == ready_processes[0]->ID){
+                            connect(this->draw_process,&QPushButton::clicked,[=](){
+
+                                        QMessageBox message;
+                                        message.setMinimumSize(300,200);
+                                        message.setWindowTitle("Process("+ready_processes[0]->Process_name+")summary");
+                                        //message.setWindowTitle("Process ("+Processes_Queue[x]->Process_name+") summary");
+                                        //QString s = \
+                                          //      "Process Name: "+Processes_Queue[x]->Process_name +"\n"+"Arrived: "+QString::number(Processes_Queue[x]->Arrival_Time)+"\n"+"Termination Time: "\
+                                            //    +QString::number(Processes_Queue[x]->Termination_Time) \
+                                              //  +"\n"+"Turnaround Time: " +QString::number(Processes_Queue[x]->Termination_Time - Processes_Queue[x]->Arrival_Time)\
+                                                //+"\n"+"Waiting Time: "+QString::number(Processes_Queue[x]->Termination_Time - Processes_Queue[x]->Arrival_Time-Processes_Queue[x]->Burst_Time);
+                                        QString s = \
+                                                "Process Name: "+ready_processes[0]->Process_name +"\n"+"Arrived: "+QString::number(ready_processes[0]->Arrival_Time)\
+                                                +"\n"+"Waiting Time: "+QString::number(arrive[test_ID]->Waiting_Time);
+                                        message.setText(s);
+                                        message.setIcon(QMessageBox::Information);
+                                        message.setStandardButtons(QMessageBox::Ok);
+                                        message.exec();
+
+                            });
                            Processes_Queue.erase(Processes_Queue.begin()+x);
                            break;
                         }
@@ -563,9 +589,12 @@ void MainWindow::SJF_NONP_Alg(){
                     for(int j=0; j<ready_processes.size();j++){
                         //el min burst ersmha we ems7ha mn el Queue
                         if(ready_processes[j]->Burst_Time == min_burst){
-                            qDebug()<<ready_processes[j]->ID;
+
                             for(int s=0;s<arrive.size();s++){
-                                if(ready_processes[j]->ID == arrive[s]->ID) arrive[s]->Waiting_Time=time-arrive[s]->Arrival_Time;
+                                if(ready_processes[j]->ID == arrive[s]->ID){
+                                    arrive[s]->Waiting_Time=time-arrive[s]->Arrival_Time;
+                                    test_ID=s;
+                                }
                             }
 
                             //Draw
@@ -589,7 +618,28 @@ void MainWindow::SJF_NONP_Alg(){
                                 draw_process->setStyleSheet(" QPushButton{ background-color:#8566aa; color:white; font-size: 17px; font-family: Arial;border-radius: 10%;} "
                                                              "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
                                 break;
-                            }                              draw_process->setGeometry(width_Prev ,700,ready_processes[j]->Burst_Time*60,70);
+                            }
+                            draw_process->setGeometry(width_Prev ,700,ready_processes[j]->Burst_Time*60,70);
+                            connect(this->draw_process,&QPushButton::clicked,[=](){
+
+                                        QMessageBox message;
+                                        message.setMinimumSize(300,200);
+                                        message.setWindowTitle("Process("+ready_processes[j]->Process_name+")summary");
+                                        //message.setWindowTitle("Process ("+Processes_Queue[0]->Process_name+") summary");
+                                        //QString s = \
+                                          //      "Process Name: "+Processes_Queue[x]->Process_name +"\n"+"Arrived: "+QString::number(Processes_Queue[x]->Arrival_Time)+"\n"+"Termination Time: "\
+                                            //    +QString::number(Processes_Queue[x]->Termination_Time) \
+                                              //  +"\n"+"Turnaround Time: " +QString::number(Processes_Queue[x]->Termination_Time - Processes_Queue[x]->Arrival_Time)\
+                                                //+"\n"+"Waiting Time: "+QString::number(Processes_Queue[x]->Termination_Time - Processes_Queue[x]->Arrival_Time-Processes_Queue[x]->Burst_Time);
+                                        QString s = \
+                                                "Process Name: "+ready_processes[j]->Process_name +"\n"+"Arrived: "+QString::number(ready_processes[j]->Arrival_Time)\
+                                                +"\n"+"Waiting Time: "+QString::number(arrive[test_ID]->Waiting_Time);
+                                        message.setText(s);
+                                        message.setIcon(QMessageBox::Information);
+                                        message.setStandardButtons(QMessageBox::Ok);
+                                        message.exec();
+
+                            });
                             //this->layout()->addWidget(draw_process);
                             draw_time = new QLabel();
                             draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
@@ -681,6 +731,7 @@ void MainWindow::SJF_P_Alg(){
             float time=0;
             int arrive_index=1;
             int flag=-1;
+            int test_ID;
             while(Processes_Queue.size()!=0){
                 QVector<Process *> ready_processes;
                 for(int i=0; i<Processes_Queue.size();i++){
@@ -729,10 +780,10 @@ void MainWindow::SJF_P_Alg(){
 
                         }
 
-
                         for(int s=0;s<arrive.size();s++){
                             if(ready_processes[0]->ID == arrive[s]->ID) {
                                 arrive[s]->Termination_Time=time;
+                                test_ID=s;
                             }
                         }
 
@@ -756,7 +807,29 @@ void MainWindow::SJF_P_Alg(){
                             draw_process->setStyleSheet(" QPushButton{ background-color:#8566aa; color:white; font-size: 17px; font-family: Arial;border-radius: 10%;} "
                                                          "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
                             break;
-                        }                          draw_process->setGeometry(width_Prev,700,(time-start_index)*60,70);
+                        }
+                        draw_process->setGeometry(width_Prev,700,(time-start_index)*60,70);
+                        connect(this->draw_process,&QPushButton::clicked,[=](){
+                                    QMessageBox message;
+                                    message.setMinimumSize(300,200);
+                                    message.setWindowTitle("Process("+ready_processes[0]->Process_name+")summary");
+                                    //message.setWindowTitle("Process ("+Processes_Queue[0]->Process_name+") summary");
+                                    //QString s = \
+                                      //      "Process Name: "+Processes_Queue[x]->Process_name +"\n"+"Arrived: "+QString::number(Processes_Queue[x]->Arrival_Time)+"\n"+"Termination Time: "\
+                                        //    +QString::number(Processes_Queue[x]->Termination_Time) \
+                                          //  +"\n"+"Turnaround Time: " +QString::number(Processes_Queue[x]->Termination_Time - Processes_Queue[x]->Arrival_Time)\
+                                            //+"\n"+"Waiting Time: "+QString::number(Processes_Queue[x]->Termination_Time - Processes_Queue[x]->Arrival_Time-Processes_Queue[x]->Burst_Time);
+                                    QString s = \
+                                            "Process Name: "+ready_processes[0]->Process_name +"\n"+"Arrived: "+QString::number(ready_processes[0]->Arrival_Time)\
+                                            +"\n"+"Waiting Time: "+QString::number(arrive[test_ID]->Termination_Time-arrive[test_ID]->Burst_Time-arrive[test_ID]->Arrival_Time)\
+                                            +"\n"+"Turnaround Time: " +QString::number(arrive[test_ID]->Termination_Time - arrive[test_ID]->Arrival_Time)\
+                                            +"\n"+"Termination Time: "+QString::number(arrive[test_ID]->Termination_Time);
+                                    message.setText(s);
+                                    message.setIcon(QMessageBox::Information);
+                                    message.setStandardButtons(QMessageBox::Ok);
+                                    message.exec();
+
+                        });
                         this->Scene->addWidget(draw_process);
                         draw_time = new QLabel();
                         draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
@@ -780,6 +853,7 @@ void MainWindow::SJF_P_Alg(){
                                break;
                             }
                          }
+
 
                     }
 
@@ -857,6 +931,7 @@ void MainWindow::SJF_P_Alg(){
                                 for(int s=0;s<arrive.size();s++){
                                     if(ready_processes[j]->ID == arrive[s]->ID) {
                                         arrive[s]->Termination_Time=time;
+                                        test_ID=s;
                                     }
                                 }
                                 //Draw
@@ -880,7 +955,28 @@ void MainWindow::SJF_P_Alg(){
                                     draw_process->setStyleSheet(" QPushButton{ background-color:#8566aa; color:white; font-size: 17px; font-family: Arial;border-radius: 10%;} "
                                                                  "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
                                     break;
-                                }                                  draw_process->setGeometry(width_Prev,700,(time-start_index)*60,70);
+                                }
+                                draw_process->setGeometry(width_Prev,700,(time-start_index)*60,70);
+                                connect(this->draw_process,&QPushButton::clicked,[=](){
+                                            QMessageBox message;
+                                            message.setMinimumSize(300,200);
+                                            message.setWindowTitle("Process("+ready_processes[0]->Process_name+")summary");
+                                            //message.setWindowTitle("Process ("+Processes_Queue[0]->Process_name+") summary");
+                                            //QString s = \
+                                              //      "Process Name: "+Processes_Queue[x]->Process_name +"\n"+"Arrived: "+QString::number(Processes_Queue[x]->Arrival_Time)+"\n"+"Termination Time: "\
+                                                //    +QString::number(Processes_Queue[x]->Termination_Time) \
+                                                  //  +"\n"+"Turnaround Time: " +QString::number(Processes_Queue[x]->Termination_Time - Processes_Queue[x]->Arrival_Time)\
+                                                    //+"\n"+"Waiting Time: "+QString::number(Processes_Queue[x]->Termination_Time - Processes_Queue[x]->Arrival_Time-Processes_Queue[x]->Burst_Time);
+                                            QString s = \
+                                                    "Process Name: "+ready_processes[j]->Process_name +"\n"+"Arrived: "+QString::number(ready_processes[j]->Arrival_Time)\
+                                                    +"\n"+"Waiting Time: "+QString::number(arrive[test_ID]->Termination_Time-arrive[test_ID]->Burst_Time-arrive[test_ID]->Arrival_Time)\
+                                                    +"\n"+"Turnaround Time: " +QString::number(arrive[test_ID]->Termination_Time - arrive[test_ID]->Arrival_Time)\
+                                                    +"\n"+"Termination Time: "+QString::number(arrive[test_ID]->Termination_Time);
+                                            message.setText(s);
+                                            message.setIcon(QMessageBox::Information);
+                                            message.setStandardButtons(QMessageBox::Ok);
+                                            message.exec();
+                                            });
                                 this->Scene->addWidget(draw_process);
                                 draw_time = new QLabel();
                                 draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
@@ -898,6 +994,7 @@ void MainWindow::SJF_P_Alg(){
                                        break;
                                     }
                                  }
+
                                 break;
                             }
 
@@ -1385,6 +1482,7 @@ void MainWindow::Priority_AlgP()
             float time=0;
             int arrive_index=1;
             int flag=-1;
+            int test_ID;
             while(Processes_Queue.size()!=0){
                 QVector<Process *> ready_processes;
                 for(int i=0; i<Processes_Queue.size();i++){
@@ -1419,6 +1517,7 @@ void MainWindow::Priority_AlgP()
                         for(int s=0;s<arrive.size();s++){
                             if(ready_processes[0]->ID == arrive[s]->ID) {
                                 arrive[s]->Termination_Time=time;
+                                test_ID=s;
                             }
                         }
 
@@ -1442,7 +1541,29 @@ void MainWindow::Priority_AlgP()
                             draw_process->setStyleSheet(" QPushButton{ background-color:#8566aa; color:white; font-size: 17px; font-family: Arial;border-radius: 10%;} "
                                                          "QPushButton:hover { background-color: white; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:black;} ");
                             break;
-                        }                        draw_process->setGeometry(width_Prev,700,(time-start_index)*60,70);
+                        }
+                        draw_process->setGeometry(width_Prev,700,(time-start_index)*60,70);
+                        connect(this->draw_process,&QPushButton::clicked,[=](){
+                                    QMessageBox message;
+                                    message.setMinimumSize(300,200);
+                                    message.setWindowTitle("Process("+ready_processes[0]->Process_name+")summary");
+                                    //message.setWindowTitle("Process ("+Processes_Queue[0]->Process_name+") summary");
+                                    //QString s = \
+                                      //      "Process Name: "+Processes_Queue[x]->Process_name +"\n"+"Arrived: "+QString::number(Processes_Queue[x]->Arrival_Time)+"\n"+"Termination Time: "\
+                                        //    +QString::number(Processes_Queue[x]->Termination_Time) \
+                                          //  +"\n"+"Turnaround Time: " +QString::number(Processes_Queue[x]->Termination_Time - Processes_Queue[x]->Arrival_Time)\
+                                            //+"\n"+"Waiting Time: "+QString::number(Processes_Queue[x]->Termination_Time - Processes_Queue[x]->Arrival_Time-Processes_Queue[x]->Burst_Time);
+                                    QString s = \
+                                            "Process Name: "+ready_processes[0]->Process_name +"\n"+"Arrived: "+QString::number(ready_processes[0]->Arrival_Time)\
+                                            +"\n"+"Waiting Time: "+QString::number(arrive[test_ID]->Termination_Time-arrive[test_ID]->Burst_Time-arrive[test_ID]->Arrival_Time)\
+                                            +"\n"+"Turnaround Time: " +QString::number(arrive[test_ID]->Termination_Time - arrive[test_ID]->Arrival_Time)\
+                                            +"\n"+"Termination Time: "+QString::number(arrive[test_ID]->Termination_Time);
+                                    message.setText(s);
+                                    message.setIcon(QMessageBox::Information);
+                                    message.setStandardButtons(QMessageBox::Ok);
+                                    message.exec();
+
+                        });
                         this->Scene->addWidget(draw_process);
                         draw_time = new QLabel();
                         draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
@@ -1520,6 +1641,7 @@ void MainWindow::Priority_AlgP()
                                 for(int s=0;s<arrive.size();s++){
                                     if(ready_processes[j]->ID == arrive[s]->ID) {
                                         arrive[s]->Termination_Time=time;
+                                        test_ID=s;
                                     }
                                 }
                                 //Draw
@@ -1549,6 +1671,26 @@ void MainWindow::Priority_AlgP()
                                 draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
                                 draw_time->setText(tr(" %1").arg(start_index));
                                 draw_time->setGeometry(width_Prev,780,60,30);
+                                connect(this->draw_process,&QPushButton::clicked,[=](){
+                                            QMessageBox message;
+                                            message.setMinimumSize(300,200);
+                                            message.setWindowTitle("Process("+ready_processes[0]->Process_name+")summary");
+                                            //message.setWindowTitle("Process ("+Processes_Queue[0]->Process_name+") summary");
+                                            //QString s = \
+                                              //      "Process Name: "+Processes_Queue[x]->Process_name +"\n"+"Arrived: "+QString::number(Processes_Queue[x]->Arrival_Time)+"\n"+"Termination Time: "\
+                                                //    +QString::number(Processes_Queue[x]->Termination_Time) \
+                                                  //  +"\n"+"Turnaround Time: " +QString::number(Processes_Queue[x]->Termination_Time - Processes_Queue[x]->Arrival_Time)\
+                                                    //+"\n"+"Waiting Time: "+QString::number(Processes_Queue[x]->Termination_Time - Processes_Queue[x]->Arrival_Time-Processes_Queue[x]->Burst_Time);
+                                            QString s = \
+                                                    "Process Name: "+ready_processes[j]->Process_name +"\n"+"Arrived: "+QString::number(ready_processes[j]->Arrival_Time)\
+                                                    +"\n"+"Waiting Time: "+QString::number(arrive[test_ID]->Termination_Time-arrive[test_ID]->Burst_Time-arrive[test_ID]->Arrival_Time)\
+                                                    +"\n"+"Turnaround Time: " +QString::number(arrive[test_ID]->Termination_Time - arrive[test_ID]->Arrival_Time)\
+                                                    +"\n"+"Termination Time: "+QString::number(arrive[test_ID]->Termination_Time);
+                                            message.setText(s);
+                                            message.setIcon(QMessageBox::Information);
+                                            message.setStandardButtons(QMessageBox::Ok);
+                                            message.exec();
+                                            });
                                 this->Scene->addWidget(draw_time);
                                 width_Prev=width_Prev + (time-start_index)*60;
 
