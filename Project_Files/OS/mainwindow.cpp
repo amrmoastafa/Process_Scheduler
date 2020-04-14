@@ -142,6 +142,7 @@ void MainWindow::Get_Text()
 
             Processes_Queue[j]->Burst_Time = (burst_time[j]->text().toFloat());//getting the text written (burst time of process j) from line edit of j
             Processes_Queue[j]->ID =j;
+            qDebug()<<"tessssst";
 
             qDebug() <<"Process : " <<Processes_Queue[j]->Process_name<<" Burst Time is : "<<Processes_Queue[j]->Burst_Time;
             if(Algorithm_dropdown->currentText() == "Priority")
@@ -692,8 +693,8 @@ void MainWindow::SJF_P_Alg(){
                     // If only one process is ready draw it
                     if(ready_processes.size() == 1){
                        // qDebug()<<ready_processes[0]->ID;
-
-                        if (flag !=ready_processes[0]->ID){
+                       qDebug()<<"1";
+                        /*if (flag !=ready_processes[0]->ID){
                             //get waiting time
                             for(int s=0;s<arrive.size();s++){
                                 if(ready_processes[0]->ID == arrive[s]->ID) {
@@ -706,7 +707,7 @@ void MainWindow::SJF_P_Alg(){
 
                                 }
                             }
-                        }
+                        }*/
 
                         float start_index=time;
 
@@ -714,15 +715,18 @@ void MainWindow::SJF_P_Alg(){
                         if(arrive_index<arrive.size()){
                             if(time+ready_processes[0]->Remaining_Time < arrive[arrive_index]->Arrival_Time){
                                 time = time + ready_processes[0]->Remaining_Time;
+
                             }
                             else{
                                 time=arrive[arrive_index]->Arrival_Time;
+
                                 flag=ready_processes[0]->ID;
                             }
                             arrive_index++;
                         }
                         else{
                             time = time + ready_processes[0]->Remaining_Time;
+
                         }
 
 
@@ -761,16 +765,22 @@ void MainWindow::SJF_P_Alg(){
                         this->Scene->addWidget(draw_time);
                         width_Prev=width_Prev + (time-start_index)*60;
 
+
                        // DrawingSJFP.push_back(ready_processes[0]);
                         for(int x=0;x<Processes_Queue.size();x++){
+
                             if(Processes_Queue[x]->ID == ready_processes[0]->ID){
+
                                Processes_Queue[x]->Remaining_Time =Processes_Queue[x]->Remaining_Time- (time-start_index);
-                               if(Processes_Queue[x]->Remaining_Time == 0){
+
+                               if(Processes_Queue[x]->Remaining_Time <= 0.000001 ){
                                    Processes_Queue.erase(Processes_Queue.begin()+x);
+
                                }
                                break;
                             }
                          }
+
                     }
 
                     else if (ready_processes.size()==0){
@@ -805,9 +815,9 @@ void MainWindow::SJF_P_Alg(){
                             //el min burst ersmha we ems7ha mn el Queue
                             if(ready_processes[j]->Remaining_Time == min_remaining_time){
                                 //qDebug()<<ready_processes[j]->ID;
-
+                                qDebug()<<"2";
                                 //calc avg
-                                if(flag!=ready_processes[j]->ID){
+                               /* if(flag!=ready_processes[j]->ID){
                                     for(int s=0;s<arrive.size();s++){
                                         if(ready_processes[j]->ID == arrive[s]->ID){
                                             if(arrive[s]->Remaining_Time != arrive[s]->Burst_Time){
@@ -821,7 +831,7 @@ void MainWindow::SJF_P_Alg(){
 
                                     }
 
-                                }
+                                }*/
 
                                 //set waiting time
 
@@ -884,7 +894,7 @@ void MainWindow::SJF_P_Alg(){
                                 for(int x=0;x<Processes_Queue.size();x++){
                                     if(Processes_Queue[x]->ID == ready_processes[j]->ID){
                                         Processes_Queue[x]->Remaining_Time =Processes_Queue[x]->Remaining_Time- (time-start_index);
-                                        if(Processes_Queue[x]->Remaining_Time == 0) Processes_Queue.erase(Processes_Queue.begin()+x);
+                                        if(Processes_Queue[x]->Remaining_Time <= 0.000001) Processes_Queue.erase(Processes_Queue.begin()+x);
                                        break;
                                     }
                                  }
@@ -1445,7 +1455,7 @@ void MainWindow::Priority_AlgP()
                         for(int x=0;x<Processes_Queue.size();x++){
                             if(Processes_Queue[x]->ID == ready_processes[0]->ID){
                                Processes_Queue[x]->Remaining_Time =Processes_Queue[x]->Remaining_Time- (time-start_index);
-                               if(Processes_Queue[x]->Remaining_Time == 0){
+                               if(Processes_Queue[x]->Remaining_Time <= 0.000001){
                                    Processes_Queue.erase(Processes_Queue.begin()+x);
                                }
                                break;
@@ -1547,7 +1557,7 @@ void MainWindow::Priority_AlgP()
                                 for(int x=0;x<Processes_Queue.size();x++){
                                     if(Processes_Queue[x]->ID == ready_processes[j]->ID){
                                         Processes_Queue[x]->Remaining_Time =Processes_Queue[x]->Remaining_Time- (time-start_index);
-                                        if(Processes_Queue[x]->Remaining_Time == 0) Processes_Queue.erase(Processes_Queue.begin()+x);
+                                        if(Processes_Queue[x]->Remaining_Time <= 0.000001) Processes_Queue.erase(Processes_Queue.begin()+x);
                                        break;
                                     }
                                  }
