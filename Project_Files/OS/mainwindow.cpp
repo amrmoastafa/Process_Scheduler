@@ -975,7 +975,7 @@ void MainWindow::SJF_P_Alg(){
                                 connect(this->draw_process,&QPushButton::clicked,[=](){
                                             QMessageBox message;
                                             message.setMinimumSize(300,200);
-                                            message.setWindowTitle("Process("+ready_processes[0]->Process_name+")summary");
+                                            message.setWindowTitle("Process("+ready_processes[j]->Process_name+")summary");
                                             //message.setWindowTitle("Process ("+Processes_Queue[0]->Process_name+") summary");
                                             //QString s = \
                                               //      "Process Name: "+Processes_Queue[x]->Process_name +"\n"+"Arrived: "+QString::number(Processes_Queue[x]->Arrival_Time)+"\n"+"Termination Time: "\
@@ -1692,7 +1692,7 @@ void MainWindow::Priority_AlgP()
                                 connect(this->draw_process,&QPushButton::clicked,[=](){
                                             QMessageBox message;
                                             message.setMinimumSize(300,200);
-                                            message.setWindowTitle("Process("+ready_processes[0]->Process_name+")summary");
+                                            message.setWindowTitle("Process("+ready_processes[j]->Process_name+")summary");
                                             //message.setWindowTitle("Process ("+Processes_Queue[0]->Process_name+") summary");
                                             //QString s = \
                                               //      "Process Name: "+Processes_Queue[x]->Process_name +"\n"+"Arrived: "+QString::number(Processes_Queue[x]->Arrival_Time)+"\n"+"Termination Time: "\
