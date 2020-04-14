@@ -943,8 +943,8 @@ void MainWindow::FCFS_Alg(){
 
         if( (Processes_Queue[i]->Arrival_Time) > time)
         {
-            qDebug()<<"Gap";
-            Temp->p_next = "Gap";Temp->p_width = ((Processes_Queue[i]->Arrival_Time) - time );Temp->time_start = time;
+            qDebug()<<"idle";
+            Temp->p_next = "idle";Temp->p_width = ((Processes_Queue[i]->Arrival_Time) - time );Temp->time_start = time;
             DrawingQueueFCFS.append(*Temp);
             time = time + Temp->p_width;
             qDebug()<<"Gap width : " <<Temp->p_width;
@@ -1025,7 +1025,7 @@ void MainWindow::FCFS_Alg(){
         draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
 
         qDebug()<<DrawingQueueFCFS[i].p_next;
-        if(DrawingQueueFCFS[i].p_next == "Gap")
+        if(DrawingQueueFCFS[i].p_next == "idle")
         {
             qDebug() <<"Entered Gap";
             Process_drawn->setGeometry( time,0,(DrawingQueueFCFS[i].p_width*25),100);
@@ -1194,7 +1194,7 @@ void MainWindow::Priority_AlgNP()
         {
 
 
-            Temp->p_next = "Gap";Temp->p_width = ((Processes_Queue[i]->Arrival_Time) - time );Temp->time_start = time;
+            Temp->p_next = "idle";Temp->p_width = ((Processes_Queue[i]->Arrival_Time) - time );Temp->time_start = time;
             DrawingQueueFCFS.append(*Temp);
             time = time + Temp->p_width;
 
@@ -1277,7 +1277,7 @@ void MainWindow::Priority_AlgNP()
         draw_time = new QLabel();
         draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
 
-        if(DrawingQueueFCFS[i].p_next == "Gap")
+        if(DrawingQueueFCFS[i].p_next == "idle")
         {
 
             Process_drawn->setGeometry( time,0,(DrawingQueueFCFS[i].p_width*25),100);
