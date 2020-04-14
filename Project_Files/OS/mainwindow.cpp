@@ -69,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     Avg_label= new QLabel();
     Avg_label->setStyleSheet("color:rgb(0,0,128); background-color:rgb(128,128,128);font-size: 40px;");
-    Avg_label->setGeometry(500,50,700,90);
+    Avg_label->setGeometry(500,50,700,100);
 
     //ui->setupUi(this);
 }
@@ -459,6 +459,7 @@ void MainWindow::SJF_NONP_Alg(){
         }
         for(int i=0;i<Processes_Queue.size();i++){
             Processes_Queue[i]->Waiting_Time=0;
+            Processes_Queue[i]->Termination_Time=0;
         }
 
         QVector <Process *> arrive;
@@ -528,6 +529,12 @@ void MainWindow::SJF_NONP_Alg(){
                     }
                     arrive_index++;
                     time= time + ready_processes[0]->Burst_Time;
+                    for(int s=0;s<arrive.size();s++){
+                        if(ready_processes[0]->ID == arrive[s]->ID){
+                            arrive[s]->Termination_Time=time;
+                            break;
+                        }
+                    }
                     for(int x=0;x<Processes_Queue.size();x++){
                         if(Processes_Queue[x]->ID == ready_processes[0]->ID){
                             connect(this->draw_process,&QPushButton::clicked,[=](){
@@ -654,6 +661,12 @@ void MainWindow::SJF_NONP_Alg(){
                             arrive_index++;
 
                             time = time + ready_processes[j]->Burst_Time;
+                            for(int s=0;s<arrive.size();s++){
+                                if(ready_processes[j]->ID == arrive[s]->ID){
+                                    arrive[s]->Termination_Time=time;break;
+
+                                }
+                            }
                             for(int x=0;x<Processes_Queue.size();x++){
                                 if(Processes_Queue[x]->ID == ready_processes[j]->ID){
                                    Processes_Queue.erase(Processes_Queue.begin()+x);
@@ -683,16 +696,18 @@ void MainWindow::SJF_NONP_Alg(){
         draw_time->setGeometry(width_Prev,750,60,50);
         this->Scene->addWidget(draw_time);
         float sum=0;
+        float sum2 =0;
         for(int q=0;q<arrive.size();q++){
             qDebug()<<arrive[q]->ID << "waiting time is"<<arrive[q]->Waiting_Time;
             sum=sum+arrive[q]->Waiting_Time;
+            sum2=sum2+(arrive[q]->Termination_Time-arrive[q]->Arrival_Time);
         }
 
         float avg=sum/arrive.size();
+        float avgturn=sum2/arrive.size();
         qDebug()<<avg;
 
-        Avg_label->setText(tr("Average Waiting Time= %1").arg(avg));
-
+        Avg_label->setText("Average Waiting Time : "+QString::number(avg) + "\n" "Average Turnaround Time : " + QString::number(avgturn));
         this->Scene->addWidget(Avg_label);
 
 }
@@ -1009,14 +1024,17 @@ void MainWindow::SJF_P_Alg(){
             this->Scene->addWidget(draw_time);
 
             float sum=0;
+            float sum2=0;
             for(int q=0;q<arrive.size();q++){
                 sum=sum+(arrive[q]->Termination_Time-arrive[q]->Burst_Time-arrive[q]->Arrival_Time);
+                sum2=sum2+(arrive[q]->Termination_Time-arrive[q]->Arrival_Time);
             }
 
             float avg=sum/arrive.size();
+            float avgturn=sum2/arrive.size();
             qDebug()<<avg;
 
-            Avg_label->setText(tr("Average Waiting Time= %1").arg(avg));
+            Avg_label->setText("Average Waiting Time : "+QString::number(avg) + "\n" "Average Turnaround Time : " + QString::number(avgturn));
 
             this->Scene->addWidget(Avg_label);
 }
@@ -1717,14 +1735,18 @@ void MainWindow::Priority_AlgP()
             this->Scene->addWidget(draw_time);
 
             float sum=0;
+            float sum2=0;
             for(int q=0;q<arrive.size();q++){
                 sum=sum+(arrive[q]->Termination_Time-arrive[q]->Burst_Time-arrive[q]->Arrival_Time);
+                sum2=sum2+(arrive[q]->Termination_Time-arrive[q]->Arrival_Time);
             }
             Avg_label= new QLabel();
+            qDebug()<<sum;
             float avg=sum/arrive.size();
+            float avgturn=sum2/arrive.size();
             qDebug()<<avg;
             Avg_label->setStyleSheet("color:rgb(78,204,163); background-color:rgb(128,128,128);font-size: 40px;");
-            Avg_label->setText(tr("Average Waiting Time= %1").arg(avg));
+            Avg_label->setText("Average Waiting Time : "+QString::number(avg) + "\n" "Average Turnaround Time : " + QString::number(avgturn));
             Avg_label->setGeometry(500,50,700,70);
             this->Scene->addWidget(Avg_label);
 }
