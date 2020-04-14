@@ -1819,7 +1819,7 @@ void MainWindow::RR_Alg()
                                 }
                                 else
                                 {
-                                    Processes_Queue[i]->Waiting_Time+=Processes_Queue[i]->Arrival_Time-Processes_Queue[i]->old_finish_time;
+                                    Processes_Queue[i]->Waiting_Time+=time-Processes_Queue[i]->old_finish_time;
                                 }
                                 start_index=time;
                                 time += Processes_Queue[i]->quantum_time;
@@ -1880,7 +1880,7 @@ void MainWindow::RR_Alg()
                                 }
                                 else
                                 {
-                                    Processes_Queue[i]->Waiting_Time+=Processes_Queue[i]->Arrival_Time-Processes_Queue[i]->old_finish_time;
+                                    Processes_Queue[i]->Waiting_Time+=time-Processes_Queue[i]->old_finish_time;
                                 }
 
                                 start_index=time;
@@ -1981,7 +1981,7 @@ void MainWindow::RR_Alg()
                             }
                             else
                             {
-                                Processes_Queue[k]->Waiting_Time+=Processes_Queue[k]->Arrival_Time-Processes_Queue[k]->old_finish_time;
+                                Processes_Queue[k]->Waiting_Time+=time-Processes_Queue[k]->old_finish_time;
                             }
 
                             start_index=time;
@@ -2040,7 +2040,7 @@ void MainWindow::RR_Alg()
                             }
                             else
                             {
-                                Processes_Queue[k]->Waiting_Time+=Processes_Queue[k]->Arrival_Time-Processes_Queue[k]->old_finish_time;
+                                Processes_Queue[k]->Waiting_Time+=time-Processes_Queue[k]->old_finish_time;
                             }
 
                             start_index=time;
