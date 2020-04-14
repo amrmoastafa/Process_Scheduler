@@ -1741,6 +1741,7 @@ void MainWindow::RR_Alg()
     {
         Processes_Queue[s]->Remaining_Time=Processes_Queue[s]->Burst_Time;
         Processes_Queue[s]->Waiting_Time=0;
+        Processes_Queue[s]->TurnAround_Time=0;
     }
     qDebug()<< "HI " ;
 
@@ -1751,7 +1752,8 @@ void MainWindow::RR_Alg()
     int first_time=1;
     float avg_waiting_time=0;
     float tot_avg_waiting_time=0;
-
+    float avg_turnaround_time=0;
+    float tot_avg_turnaround_time=0;
     while(1)
     {
         bool vector_done = true;
@@ -2111,11 +2113,13 @@ void MainWindow::RR_Alg()
     for(int l=0;l<Processes_Queue.size();l++)
     {
         avg_waiting_time+=Processes_Queue[l]->Waiting_Time;
+        avg_turnaround_time+=Processes_Queue[l]->Waiting_Time+Processes_Queue[l]->Burst_Time;
     }
     int n=Processes_Queue.size();
     tot_avg_waiting_time=avg_waiting_time/(float)n;
+    tot_avg_turnaround_time=avg_turnaround_time/(float)n;
     Avg_label->setText(tr("Average Waiting Time= %1").arg(abs(tot_avg_waiting_time)));
-    this->Scene->addWidget(Avg_label);
+    //this->Scene->addWidget(Avg_label);
 
 }
 
