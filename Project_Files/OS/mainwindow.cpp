@@ -380,7 +380,8 @@ int MainWindow::PRIORITY_layout(){
     priortiy_label = new QLabel("Priority");
     priortiy_label->setGeometry(220,250,50,30);
     priortiy_label->setStyleSheet("background-color:rgb(78,204,163); color:rgb(35,41,49); font-size: 15px; font-family: Arial;");
-    this->scene_toolbar->addWidget(priortiy_label);
+    scene_toolbar->addWidget(priortiy_label);
+//    this->scene_toolbar->addWidget(priortiy_label);
 
 
 
@@ -405,7 +406,6 @@ int MainWindow::PRIORITY_layout(){
         priority_input->setValidator(validator);
         priority_input->setStyleSheet("background-color:rgb(78,204,163);");
 
-        //this->layout()->addWidget(priority_input);
 
         Process *p = new Process;
 
@@ -1153,32 +1153,32 @@ void MainWindow::FCFS_Alg(){
         if(DrawingQueueFCFS[i].p_next == "idle")
         {
             qDebug() <<"Entered Gap";
-            Process_drawn->setGeometry( time,700,(DrawingQueueFCFS[i].p_width*25),100);
+            Process_drawn->setGeometry( time,700,(DrawingQueueFCFS[i].p_width*60),100);
             Process_drawn->setText(DrawingQueueFCFS[i].p_next);
             Process_drawn->setStyleSheet(" QPushButton{ background-color:white; color:black; font-size: 17px; font-family: Arial;border-radius: 10%;} "
                                          "QPushButton:hover { background-color: black; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:white;} ");
             Scene->addWidget(Process_drawn);
 
-            draw_time->setText(QString::number(time/25));
-            draw_time->setGeometry(time-5,780,(DrawingQueueFCFS[i].p_width*25),30);
+            draw_time->setText(QString::number(time/60));
+            draw_time->setGeometry(time-5,780,(DrawingQueueFCFS[i].p_width*60),30);
             Scene->addWidget(draw_time);
-            time += ((DrawingQueueFCFS[i].p_width*25));
+            time += ((DrawingQueueFCFS[i].p_width*60));
         }else
         {
-            Process_drawn->setGeometry(time,700,(DrawingQueueFCFS[i].p_width*25),100);
+            Process_drawn->setGeometry(time,700,(DrawingQueueFCFS[i].p_width*60),100);
             Process_drawn->setText(DrawingQueueFCFS[i].p_next);
             Scene->addWidget(Process_drawn);
-            draw_time->setText(QString::number(time/25));
-            draw_time->setGeometry(time-5,780,(DrawingQueueFCFS[i].p_width*25),30);
+            draw_time->setText(QString::number(time/60));
+            draw_time->setGeometry(time-5,780,(DrawingQueueFCFS[i].p_width*60),30);
             Scene->addWidget(draw_time);
-            time += ((DrawingQueueFCFS[i].p_width*25));
+            time += ((DrawingQueueFCFS[i].p_width*60));
         }
         if(i == DrawingQueueFCFS.size()-1)
         {
             draw_time = new QLabel();
             draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
-            draw_time->setText(QString::number(time/25));
-            draw_time->setGeometry(time-5,780,(DrawingQueueFCFS[i].p_width*25),30);
+            draw_time->setText(QString::number(time/60));
+            draw_time->setGeometry(time-5,780,(DrawingQueueFCFS[i].p_width*60),30);
             Scene->addWidget(draw_time);
         }
         connect(this->Process_drawn,&QPushButton::clicked,[=](){
@@ -1405,33 +1405,33 @@ void MainWindow::Priority_AlgNP()
         if(DrawingQueueFCFS[i].p_next == "idle")
         {
 
-            Process_drawn->setGeometry( time,700,(DrawingQueueFCFS[i].p_width*25),100);
+            Process_drawn->setGeometry( time,700,(DrawingQueueFCFS[i].p_width*60),100);
             Process_drawn->setText(DrawingQueueFCFS[i].p_next);
             Process_drawn->setStyleSheet(" QPushButton{ background-color:white; color:black; font-size: 17px; font-family: Arial;border-radius: 10%;} "
                                          "QPushButton:hover { background-color: black; border-radius:10%;border-width: 0.5px; border-style: solid; border-color: gray ;color:white;} ");
             Scene->addWidget(Process_drawn);
 
-            draw_time->setText(QString::number(time/25));
-            draw_time->setGeometry(time-5,780,(DrawingQueueFCFS[i].p_width*25),30);
+            draw_time->setText(QString::number(time/60));
+            draw_time->setGeometry(time-5,780,(DrawingQueueFCFS[i].p_width*60),30);
             Scene->addWidget(draw_time);
 
-            time += ((DrawingQueueFCFS[i].p_width*25));
+            time += ((DrawingQueueFCFS[i].p_width*60));
         }else
         {
-            Process_drawn->setGeometry(time,700,(DrawingQueueFCFS[i].p_width*25),100);
+            Process_drawn->setGeometry(time,700,(DrawingQueueFCFS[i].p_width*60),100);
             Process_drawn->setText(DrawingQueueFCFS[i].p_next);
             Scene->addWidget(Process_drawn);
-            draw_time->setText(QString::number(time/25));
-            draw_time->setGeometry(time-5,780,(DrawingQueueFCFS[i].p_width*25),30);
+            draw_time->setText(QString::number(time/60));
+            draw_time->setGeometry(time-5,780,(DrawingQueueFCFS[i].p_width*60),30);
             Scene->addWidget(draw_time);
-            time += ((DrawingQueueFCFS[i].p_width*25));
+            time += ((DrawingQueueFCFS[i].p_width*60));
         }
         if(i == DrawingQueueFCFS.size()-1)
         {
             draw_time = new QLabel();
             draw_time->setStyleSheet("color:black; background-color:rgb(128,128,128);");
-            draw_time->setText(QString::number(time/25));
-            draw_time->setGeometry(time-5,780,(DrawingQueueFCFS[i].p_width*25),30);
+            draw_time->setText(QString::number(time/60));
+            draw_time->setGeometry(time-5,780,(DrawingQueueFCFS[i].p_width*60),30);
             Scene->addWidget(draw_time);
         }
         connect(this->Process_drawn,&QPushButton::clicked,[=](){
@@ -2292,8 +2292,9 @@ void MainWindow::RR_Alg()
     int n=Processes_Queue.size();
     tot_avg_waiting_time=avg_waiting_time/(float)n;
     tot_avg_turnaround_time=avg_turnaround_time/(float)n;
-    Avg_label->setText(tr("Average Waiting Time= %1").arg(abs(tot_avg_waiting_time)));
-    //this->Scene->addWidget(Avg_label);
+
+    Avg_label->setText("Average Waiting Time : "+QString::number(tot_avg_waiting_time) + "\n" "Average Turnaround Time : " + QString::number(tot_avg_turnaround_time));
+    Scene->addWidget(Avg_label);
 
 }
 

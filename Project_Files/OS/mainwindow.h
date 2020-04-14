@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QPixmap>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QMainWindow>
